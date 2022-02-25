@@ -577,7 +577,14 @@ function random(min,max){
 
 
 
-/* [ ADD WALL ] */
+/* [ ADD WALLS ] */
+let walls = [
+  60,0, 132,0, 30,36, 0,72,
+  460,72, 532,72, 604,72,
+  820,72, 892,72, 320,350,
+  604,350, 820,350, 892,350
+]
+
 function addWall(x,y){
   let wall = document.createElement('div')
   wall.setAttribute('class', 'wall')
@@ -588,44 +595,13 @@ function addWall(x,y){
   test.setAttribute('class', 'bottom')
   test.style.margin = `${y+65}px 0 0 ${x+15}px`
   map.append(test)
-} 
+}
 
-
-/* [ УГОЛОК ] */
-addWall(60,0)
-addWall(132,0)
-addWall(30,36)
-addWall(0,72)
-
-
-/* [ СТЕНКА ] */
-// addWall(460,72)
-// addWall(430,108)
-// addWall(400,144)
-
-
-/* [ СТЕНКА ] */
-addWall(460,72)
-addWall(532,72)
-addWall(604,72)
-// addWall(676,72)
-// addWall(748,72)
-addWall(820,72)
-addWall(892,72)
-
-
-/* [ СТЕНКА ] */
-addWall(320,350)
-//addWall(460,284) // 2x y - 66
-
-//addWall(532,350)
-
-addWall(604,350) 
-//addWall(604,284) // 2x
-
-addWall(820,350)
-//addWall(820,284)
-addWall(892,350) 
+for(let i=0; i<walls.length-1; i++){
+  let j = i; j++
+  addWall(walls[i],walls[j])
+  i++
+}
 
 
 
@@ -659,36 +635,10 @@ function marker(x,y,z){
 
 
 /* [ СЦЕНАРИЙ СОПРИКОСНОВЕНИЯ С ОБЬЕКТОМ ПРИ ДВИЖЕНИИ ] */
-let usr = document.getElementsByClassName('user')[0]
+let usr = document.getElementsByClassName('user')[0],
+    above = true, under = true 
 
-// document.elementFromPoint(user.x-2, user.y+36), //8
-// marker(user.x-2,user.y+36,'blue')
-
-// document.elementFromPoint(user.x+30,   user.y-2),  //9
-// marker(user.x+30,user.y-2,'red')
-
-// document.elementFromPoint(user.x+100,user.y-2), //10
-// marker(user.x+100,user.y-2,'red')
-
-
-//marker(user.x+30,user.y-2,'red') // 9
-
-
-//marker(user.x,user.y+102,'red') // 6
-
-// marker(user.x+98,user.y+64,'red') //2
-
-// marker(user.x+100,user.y+66,'blue') // 3
-
-// marker(user.x+100,user.y-2,'green') // 10
-
-// marker(user.x+72, user.y+100, 'blue')
-
-
-
-
-let above = true, under = true 
-function contact(){
+function touch(){
 
   // Точки соприкосновения
   let elem = [
@@ -700,7 +650,6 @@ function contact(){
     document.elementFromPoint(usr.getBoundingClientRect().x+68, usr.getBoundingClientRect().y+102), // 5
     document.elementFromPoint(usr.getBoundingClientRect().x,    usr.getBoundingClientRect().y+102), // 6
     document.elementFromPoint(usr.getBoundingClientRect().x-2,  usr.getBoundingClientRect().y+100), // 7
-
     document.elementFromPoint(usr.getBoundingClientRect().x-2,  usr.getBoundingClientRect().y+36),  // 8
     document.elementFromPoint(usr.getBoundingClientRect().x+30, usr.getBoundingClientRect().y-2),   // 9
     document.elementFromPoint(usr.getBoundingClientRect().x+100,usr.getBoundingClientRect().y-2)    // 10
@@ -712,9 +661,11 @@ function contact(){
   if(user.x<0){ user.x+=2 } if(user.x>mapWidth-100) { user.x-=2 }
   if(user.y<0){ user.y+=2 } if(user.y>mapHeight-100){ user.y-=2 }
 
-  // В elem попадает элемент с которым произошло столкновение
 
+  // В elem попадает элемент с которым произошло столкновение
   for(let i=0; i<elem.length; i++){
+
+
 
     /**
      * 
@@ -733,7 +684,6 @@ function contact(){
       elem[i].remove()
 
       /* [ ДОБАВИТЬ ПОЛЗОВАТЕЛЮ 10 ПАТРОНОВ ] */
-      //audio('pistol/2');
       if(user.ammo < 120) user.ammo += 10; break
     }
 
@@ -757,10 +707,11 @@ function contact(){
       elem[i].remove()
 
       /* [ ... ] */
-      user.health = 50
+      user.health = 100
       document.getElementById('scale').style.background = 'greenyellow'
       document.getElementById('scale').style.width = user.health+'px'
-      //audio('star'); break
+
+      break
     }
 
 
@@ -846,10 +797,10 @@ let intervalX = 0, intervalY = 0
 
 document.onkeydown = (e) => {
   switch(e.code){
-    case 'KeyW': if(!intervalY) intervalY = setInterval(() => { contact(), user.y-=2, sy-=2; }, 10); break
-    case 'KeyS': if(!intervalY) intervalY = setInterval(() => { contact(), user.y+=2, sy+=2; }, 10); break
-    case 'KeyA': if(!intervalX) intervalX = setInterval(() => { contact(), user.x-=2, sx-=2; }, 10); break
-    case 'KeyD': if(!intervalX) intervalX = setInterval(() => { contact(), user.x+=2, sx+=2; }, 10); break
+    case 'KeyW': if(!intervalY) intervalY = setInterval(() => { touch(), user.y-=2, sy-=2; }, 10); break
+    case 'KeyS': if(!intervalY) intervalY = setInterval(() => { touch(), user.y+=2, sy+=2; }, 10); break
+    case 'KeyA': if(!intervalX) intervalX = setInterval(() => { touch(), user.x-=2, sx-=2; }, 10); break
+    case 'KeyD': if(!intervalX) intervalX = setInterval(() => { touch(), user.x+=2, sx+=2; }, 10); break
   }
 }
 
