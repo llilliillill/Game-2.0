@@ -29,14 +29,15 @@ section {
 /* [ USER ] */
 .user {
   background: url(img/user.png);
-  border: 1px solid yellow;
+  /* border: 1px solid yellow; */
   background-size: cover;
   margin: 150px 0 0 200px;
   position: absolute;
   display: block;
   width: 100px;
   height: 100px;
-  z-index: 1;
+  z-index: 3;
+  /* z-index: 1; */
 }
 
 #health {
@@ -57,7 +58,7 @@ section {
 
 /* [ WALL ] */
 .wall {
-  /* border: 1px solid black; */
+  /* border: 1px solid gray; */
   background: url(img/box.png);
   background-size: cover;
   position: absolute;
@@ -68,11 +69,10 @@ section {
 
 /* [ TSET ] */
 .test {
-  /* margin: 350px 0 0 247px; */
-  margin: 65px 0 0 15px;
   position: absolute;
 	width: 70px;
 	height: 35px;
+  z-index: 4;
 	transform: skew(-40deg);
 	background: rgba(255, 0, 0, 0);
 }

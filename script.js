@@ -582,8 +582,12 @@ function addWall(x,y){
   let wall = document.createElement('div')
   wall.setAttribute('class', 'wall')
   wall.style.margin = `${y}px 0 0 ${x}px`
-  wall.innerHTML = '<div class="test"></div>'
   map.append(wall)
+
+  let test = document.createElement('div')
+  test.setAttribute('class', 'test')
+  test.style.margin = `${y+65}px 0 0 ${x+15}px`
+  map.append(test)
 } 
 
 
@@ -656,53 +660,48 @@ function marker(x,y,z){
 
 /* [ СЦЕНАРИЙ СОПРИКОСНОВЕНИЯ С ОБЬЕКТОМ ПРИ ДВИЖЕНИИ ] */
 let usr = document.getElementsByClassName('user')[0]
-// marker(user.x+31,  user.y+64,'green')
-// marker(user.x+27,    user.y+66,'green')
-// marker(user.x+98,user.y+64,'red')
-// marker(user.x+100,user.y+66,'red')
-// marker(user.x+72,user.y+100,'blue')
-// marker(user.x+68,user.y+102,'red')
-// marker(user.x,    user.y+102,'red')
-// marker(user.x-2,  user.y+100,'red')
 
+// document.elementFromPoint(user.x-2, user.y+36), //8
+// marker(user.x-2,user.y+36,'blue')
+
+// document.elementFromPoint(user.x+30,   user.y-2),  //9
+// marker(user.x+30,user.y-2,'red')
+
+// document.elementFromPoint(user.x+100,user.y-2), //10
+// marker(user.x+100,user.y-2,'red')
+
+
+//marker(user.x+30,user.y-2,'red') // 9
+
+
+//marker(user.x,user.y+102,'red') // 6
+
+// marker(user.x+98,user.y+64,'red') //2
+
+// marker(user.x+100,user.y+66,'blue') // 3
+
+// marker(user.x+100,user.y-2,'green') // 10
+
+// marker(user.x+72, user.y+100, 'blue')
+
+let a = true, b = true
 function contact(){
 
   // Точки соприкосновения
-  // let elem = [
-  //   document.elementFromPoint(usr.getBoundingClientRect().x-2, usr.getBoundingClientRect().y),
-  //   document.elementFromPoint(usr.getBoundingClientRect().x,   usr.getBoundingClientRect().y-2),
-  //   document.elementFromPoint(usr.getBoundingClientRect().x+100,usr.getBoundingClientRect().y-2),
-  //   document.elementFromPoint(usr.getBoundingClientRect().x+102,usr.getBoundingClientRect().y),
-  //   document.elementFromPoint(usr.getBoundingClientRect().x+102,usr.getBoundingClientRect().y+100),
-  //   document.elementFromPoint(usr.getBoundingClientRect().x+100,usr.getBoundingClientRect().y+102),
-  //   document.elementFromPoint(usr.getBoundingClientRect().x,   usr.getBoundingClientRect().y+102),
-  //   document.elementFromPoint(usr.getBoundingClientRect().x-2, usr.getBoundingClientRect().y+100)]
+  let elem = [
+    document.elementFromPoint(usr.getBoundingClientRect().x+27, usr.getBoundingClientRect().y+66),  // 0
+    document.elementFromPoint(usr.getBoundingClientRect().x+31, usr.getBoundingClientRect().y+64),  // 1
+    document.elementFromPoint(usr.getBoundingClientRect().x+98, usr.getBoundingClientRect().y+64),  // 2
+    document.elementFromPoint(usr.getBoundingClientRect().x+100,usr.getBoundingClientRect().y+66),  // 3
+    document.elementFromPoint(usr.getBoundingClientRect().x+72, usr.getBoundingClientRect().y+100), // 4
+    document.elementFromPoint(usr.getBoundingClientRect().x+68, usr.getBoundingClientRect().y+102), // 5
+    document.elementFromPoint(usr.getBoundingClientRect().x,    usr.getBoundingClientRect().y+102), // 6
+    document.elementFromPoint(usr.getBoundingClientRect().x-2,  usr.getBoundingClientRect().y+100), // 7
 
-
-  let elem = []
-  elem[0] = document.elementFromPoint(usr.getBoundingClientRect().x+27,   usr.getBoundingClientRect().y+66)
-  //marker(usr.getBoundingClientRect().x-2,usr.getBoundingClientRect().y,'green')
-  
-  elem[1] = document.elementFromPoint(usr.getBoundingClientRect().x+31, usr.getBoundingClientRect().y+64)
-  //marker(usr.getBoundingClientRect().x,usr.getBoundingClientRect().y-2,'green')
-
-  elem[2] = document.elementFromPoint(usr.getBoundingClientRect().x+98,usr.getBoundingClientRect().y+64)
-  //marker(usr.getBoundingClientRect().x+100,usr.getBoundingClientRect().y-2,'red')
-
-  elem[3] = document.elementFromPoint(usr.getBoundingClientRect().x+100,usr.getBoundingClientRect().y+66)
-  //marker(usr.getBoundingClientRect().x+102,usr.getBoundingClientRect().y,'red')
-
-  elem[4] = document.elementFromPoint(usr.getBoundingClientRect().x+72,usr.getBoundingClientRect().y+100)
-  //marker(usr.getBoundingClientRect().x+102,usr.getBoundingClientRect().y+100,'red')
-
-  elem[5] = document.elementFromPoint(usr.getBoundingClientRect().x+68,usr.getBoundingClientRect().y+102)
-  //marker(usr.getBoundingClientRect().x+100,usr.getBoundingClientRect().y+102,'red')
-
-  elem[6] = document.elementFromPoint(usr.getBoundingClientRect().x,   usr.getBoundingClientRect().y+102)
-  //marker(usr.getBoundingClientRect().x,usr.getBoundingClientRect().y+102,'red')
-
-  elem[7] = document.elementFromPoint(usr.getBoundingClientRect().x-2, usr.getBoundingClientRect().y+100)
-  //marker(usr.getBoundingClientRect().x-2,usr.getBoundingClientRect().y+100,'red')
+    document.elementFromPoint(usr.getBoundingClientRect().x-2,  usr.getBoundingClientRect().y+36),  // 8
+    document.elementFromPoint(usr.getBoundingClientRect().x+30, usr.getBoundingClientRect().y-2),   // 9
+    document.elementFromPoint(usr.getBoundingClientRect().x+100,usr.getBoundingClientRect().y-2)    // 10
+  ]
 
 
 
@@ -711,6 +710,7 @@ function contact(){
   if(user.y<0){ user.y+=2 } if(user.y>mapHeight-100){ user.y-=2 }
 
   // В elem попадает элемент с которым произошло столкновение
+
   for(let i=0; i<elem.length; i++){
 
     /**
@@ -719,7 +719,7 @@ function contact(){
      * 
      */
 
-    if(elem[i].classList == 'ammo'){
+    if(elem[i].className == 'ammo'){
 
       accoutrement(
         parseInt(elem[i].getAttribute('x')),
@@ -743,7 +743,7 @@ function contact(){
      * 
      */
 
-    if(elem[i].classList == 'medic'){
+    if(elem[i].className == 'medic'){
 
       accoutrement(
         parseInt(elem[i].getAttribute('x')),
@@ -761,13 +761,38 @@ function contact(){
     }
 
 
+
+
+    /* [ КОГО ОТОБРАЗИТЬ СВЕРХУ ] */
+    if(elem[i].className == 'wall'){
+
+      if(i == 8 || i == 9 || i == 10){
+
+        if(b) usr.style.zIndex = 3;
+
+        if(i == 8) a = false;
+
+      }
+
+      if(i == 3 || i == 5 || i == 6){ 
+
+        if(a) usr.style.zIndex = 1;
+
+        if(i == 3) b = false;
+
+      } 
+
+    } 
+
+
+
     /**
      * 
      *  [ ЕСЛИ СОПРЕКОСНУЛИСЬ С СТЕНОЙ ... ] 
      * 
      */
 
-    if(elem[i].classList == 'test'){
+    if(elem[i].className == 'test'){
       if(i == 0 || i == 7) user.x+=2, sx+=2;
       if(i == 3 || i == 4) user.x-=2, sx-=2;
       if(i == 1 || i == 2) user.y+=2, sy+=2;
@@ -776,28 +801,63 @@ function contact(){
     }
 
 
+
     /**
      * 
      *  [ ЕСЛИ СОПРЕКОСНУЛИСЬ С ДВИЖИМЫМ БЛОКОМ ... ] 
      * 
      */
 
-    if(elem[i].classList == 'block'){
-      let j = elem[i].getAttribute('index');
-      if(i == 0 || i == 7){ block[j][0]-=2; }
-      if(i == 3 || i == 4){ block[j][0]+=2; }
-      if(i == 1 || i == 2){ block[j][1]-=2; }
-      if(i == 6 || i == 5){ block[j][1]+=2; }
-      elem[i].style.margin = block[j][1]+'px 0 0 '
-                          +block[j][0]+'px';
-      break
+    if(elem[i].className == 'block'){
+      let j = elem[i].getAttribute('index')
+      if(i == 0 || i == 7) block[j][0]-=2;
+      if(i == 3 || i == 4) block[j][0]+=2;
+      if(i == 1 || i == 2) block[j][1]-=2;
+      if(i == 6 || i == 5) block[j][1]+=2;
+      elem[i].style.margin = `${block[j][1]}
+      px 0 0 ${block[j][0]}px`; break
     }
+
+
+
+    /**
+     * 
+     *  [ НЕТ КАСАНИЯ ] 
+     * 
+     */
+
+    // if(elem[i].tagName == 'section' || elem[i].classList == 'user'){
+    //   a = true
+
+    //   //break
+    //   //console.log('none')
+    // }
+
+    // if(elem[i]){
+
+    //   console.log('true')
+    // }
+
+    if(elem[i].className == '' || elem[i].className == 'user'){
+      //console.log(elem[i].className)
+      //console.log('none')
+
+      //if(i == 8) console.log(true);
+      if(i == 8) a = true;
+      if(i == 3) b = true; 
+    } 
+
+    //console.log(elem[i].className)
+
+    // else {
+    //   console.log('i: '+i+' '+elem[i].className)
+    // }
 
   }
 
   /* [ ДВИЖЕНИЕ ЭКРАНА ЗА ПОЛЬЗОВАТЕЛЕМ ] */
   document.querySelector('main').scrollTo(sx,sy)
-  usr.style.margin = user.y+'px 0 0 '+user.x+'px'
+  usr.style.margin = `${user.y}px 0 0 ${user.x}px`
 }
 
 
