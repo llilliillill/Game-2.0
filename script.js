@@ -585,7 +585,7 @@ function addWall(x,y){
   map.append(wall)
 
   let test = document.createElement('div')
-  test.setAttribute('class', 'test')
+  test.setAttribute('class', 'bottom')
   test.style.margin = `${y+65}px 0 0 ${x+15}px`
   map.append(test)
 } 
@@ -684,7 +684,10 @@ let usr = document.getElementsByClassName('user')[0]
 
 // marker(user.x+72, user.y+100, 'blue')
 
-let a = true, b = true
+
+
+
+let above = true, under = true 
 function contact(){
 
   // Точки соприкосновения
@@ -765,25 +768,14 @@ function contact(){
 
     /* [ КОГО ОТОБРАЗИТЬ СВЕРХУ ] */
     if(elem[i].className == 'wall'){
-
       if(i == 8 || i == 9 || i == 10){
-
-        if(b) usr.style.zIndex = 3;
-
-        if(i == 8) a = false;
-
-      }
-
-      if(i == 3 || i == 5 || i == 6){ 
-
-        if(a) usr.style.zIndex = 1;
-
-        if(i == 3) b = false;
-
+        if(under) usr.style.zIndex = 3;
+        if(i == 8) above = false;
+      }if(i == 3 || i == 5 || i == 6){ 
+        if(above) usr.style.zIndex = 1;
+        if(i == 3) under = false;
       } 
-
     } 
-
 
 
     /**
@@ -792,7 +784,7 @@ function contact(){
      * 
      */
 
-    if(elem[i].className == 'test'){
+    if(elem[i].className == 'bottom'){
       if(i == 0 || i == 7) user.x+=2, sx+=2;
       if(i == 3 || i == 4) user.x-=2, sx-=2;
       if(i == 1 || i == 2) user.y+=2, sy+=2;
@@ -826,32 +818,9 @@ function contact(){
      * 
      */
 
-    // if(elem[i].tagName == 'section' || elem[i].classList == 'user'){
-    //   a = true
-
-    //   //break
-    //   //console.log('none')
-    // }
-
-    // if(elem[i]){
-
-    //   console.log('true')
-    // }
-
     if(elem[i].className == '' || elem[i].className == 'user'){
-      //console.log(elem[i].className)
-      //console.log('none')
-
-      //if(i == 8) console.log(true);
-      if(i == 8) a = true;
-      if(i == 3) b = true; 
+      if(i == 8) above = true; if(i == 3) under = true; 
     } 
-
-    //console.log(elem[i].className)
-
-    // else {
-    //   console.log('i: '+i+' '+elem[i].className)
-    // }
 
   }
 
