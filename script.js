@@ -488,8 +488,8 @@ function addObject(z,x,y){
 
 document.onclick = (e) => {
 
-  // marker(e.pageX-main.getBoundingClientRect().x,
-  // e.pageY-main.getBoundingClientRect().y+sy,'green')
+  marker(e.pageX-main.getBoundingClientRect().x,
+  e.pageY-main.getBoundingClientRect().y+sy,'green')
 
   let x = 0, y = 0, 
   userX = user.x+50,  
@@ -516,18 +516,41 @@ document.onclick = (e) => {
     if(i == 20) bullet.style.background = 'blue';
     map.append(bullet)
 
+
+    //console.log('x: '+(x+userX).toFixed(0)+' y: '+(y+userY).toFixed(0))
+    //console.log('x: '+bullet.getBoundingClientRect().x,'y: '+bullet.getBoundingClientRect().y)
+
+
+    /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ НА КРАЙ КАРТЫ УДАЛЯЕМ ЕЕ ] */
+    if(bullet.getBoundingClientRect().x < 
+    main.getBoundingClientRect().x) 
+    bullet.remove(); 
+
+    if(bullet.getBoundingClientRect().y < 
+    main.getBoundingClientRect().y) 
+    bullet.remove();
+
+    if(bullet.getBoundingClientRect().x > 
+    mapWidth+main.getBoundingClientRect().x) 
+    bullet.remove();
+
+    if(bullet.getBoundingClientRect().y > 
+    main.clientHeight+main.getBoundingClientRect().y) 
+    bullet.remove();
+
+
     /* [ ПРОВЕРЯЕМ ВО ЧТО ПОПАЛА ПУЛЯ ] */
     let cockshot = document.elementFromPoint(
       bullet.getBoundingClientRect().x,
       bullet.getBoundingClientRect().y
     )
-      
+
+    /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ В СТЕНУ ] */
     if(cockshot.className == 'bottom'){
       break
     }
 
   } 
-
 }
 
 
