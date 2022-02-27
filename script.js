@@ -1,5 +1,6 @@
 /* [ GAME SATTINGS ] */
 let map = document.querySelector('section'),
+main = document.querySelector('main'),
 mapWidth = 1600, mapHeight = 2050,
 sx = 0, sy = 0
 
@@ -11,127 +12,43 @@ document.oncontextmenu = () => {
 }
 
 /* [ GAME FUNCTIONS ] */
-function random(min,max){
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-// function audio(x,y){
-//   let a = new Audio('music/'+x+'.mp3');
-//   a.volume = '0.2';
-//   a.play();
-//   return (y) ? a : false;
-// } 
-
-// function setMenu(x,z){
-//   if(document.getElementById('menu')){
-//   document.getElementById('menu').remove();}
-//   let a = document.createElement('div');
-//   a.setAttribute('id', 'menu');
-//   a.style.width = '100%';
-//   a.style.zIndex = '2';
-//   a.style.position = 'fixed';
-//   a.style.height = '30px';
-//   a.style.textAlign = 'center';
-//   a.style.lineHeight = '1.8';
-//   a.style.background = 'whitesmoke';
-//   a.style.border = (z) ? '1px solid '+z : '1px solid green';
-//   a.innerHTML = (z) ? '<b style="color:'+z+';">'+
-//   x+'</b>' : '<b style="color:green;">'+x+'</b>';
-//   document.body.append(a);
-//   setTimeout(() => { a.remove(); }, 3000);
+// function random(min,max){
+//   return Math.floor(Math.random() * (max - min + 1)) + min
 // }
 
-// function setInfo(){
-//   let a = document.getElementById('info');
-//   a.style.width = '100%';
-//   a.style.height = '30px';
-//   a.style.position = 'fixed';
-//   a.style.zIndex = 5;
-//   a.style.textAlign = 'center';
-//   a.style.lineHeight = '1.8';
-//   a.style.background = 'whitesmoke';
-//   a.style.border = '1px solid black';
-// } setInfo()
-
-// function marker(x,y,z){
-//   let a = document.createElement('div');
-//   a.style.margin = y+'px 0 0 '+x+'px';
-//   a.style.width = '2px';
-//   a.style.height = '2px';
-//   a.style.background = (z) ? z : 'red';
-//   a.style.position = 'absolute';
-//   a.style.zIndex = 3;
-//   document.body.append(a);
-// } 
 
 
+/* [ MARKER ] */
+function marker(x,y,z){
+  let a = document.createElement('div');
+  a.style.margin = y+'px 0 0 '+x+'px';
+  a.style.width = '2px';
+  a.style.height = '2px';
+  a.style.background = (z) ? z : 'red';
+  a.style.position = 'absolute';
+  a.style.zIndex = 3;
+  map.append(a);
+} 
 
-
-
-
-
-
-
-
-/* [ CREATE SONG ] */
-// function createSong(x,y){
-//   let a = document.createElement('img');
-//   a.style.margin = y+'px 0 0 '+x+'px';
-//   a.style.border = '1px solid orange';
-//   a.style.position = 'absolute';
-//   a.style.zIndex = 1;
-//   a.style.width = '50px';
-//   a.style.height = '50px';
-//   a.src = 'music/music.png';
-//   a.setAttribute('class', 'wall');
-//   document.body.append(a);
-// } createSong(50,50);
 
 
 
 /* [ ACCOUTREMENT ] */
-// function accoutrement(x,y,z){ 
-//   setTimeout(() => {
-//     let a = document.createElement('div');
-//     a.style.margin = random(y,(y+200))+'px 0 0 '
-//                     +random(x,(x+200))+'px';
-//     a.style.zIndex = 1;
-//     a.style.position = 'absolute';
-//     a.style.width = '50px';
-//     a.style.height = '50px';
-//     a.style.background = 'url(img/'+z+'.png)';
-//     a.setAttribute('x', x);
-//     a.setAttribute('y', y);
-//     a.setAttribute('class', z);
-//     document.body.append(a);
-//   }, 1000); 
-// } 
-// accoutrement(200,250,'ammo');
-// accoutrement(200,250,'medic');
-// accoutrement(1050,150,'medic');
-// accoutrement(1050,450,'ammo');
+function addObject(z,x,y){ 
+  map.innerHTML += `
+  <div class="${z}"
+  style="background:url(img/${z}.png) 
+  no-repeat;margin:${y}px 0 0 ${x}px;
+  display:block;">
+  </div>`
+} 
+// addObject('ammo',150,350)
+// addObject('medic',320,460)
+// addObject('medic',460,360)
 
 
-/* [ CREATE BLOCK ] */
-// let block = [[280,300,'brown'],
-//              [400,270,'black'],
-//              [900,260,'greenyellow'],
-//              [1000,260,'yellow']];
-// function createBlock(z){
-//   for(let i=0; i<z.length; i++){
-//     let a = document.createElement('div');
-//     a.style.margin = z[i][1]+'px 0 0 '+z[i][0]+'px';
-//     a.style.border = '1px solid black';
-//     a.style.position = 'absolute';
-//     a.style.zIndex = 2;
-//     a.style.width = '50px';
-//     a.style.height = '50px';
-//     a.style.background = (z[i][2]) ? z[i][2] : 'white';
-//     a.setAttribute('class', 'block');
-//     a.setAttribute('index', i);
-//     document.body.append(a);
-//   }
-// } createBlock(block);
+
+
 
 
 
@@ -355,10 +272,7 @@ function random(min,max){
  * 
  */
 
-
-// Точка начала огня
 // let p = [0,0]
-
 // document.body.onclick = (e) => {
 
 
@@ -366,24 +280,25 @@ function random(min,max){
 //   if(user.ammo > 0){
 
 //     /* [ ... ] */
-//     //audio('pistol/0') 
 //     user.ammo-- 
+//     console.log(user.ammo)
 
 //     // Анимация выстрела  
 //     //user.body.src = 'img/usr/8/0.png'
 
 //     /* [ СТАРТОВАЯ ПОЗИЦИЯ ПУЛИ ] */
-//     p[0] = user.x+25
-//     p[1] = user.y+25
+//     p[0] = user.x+50
+//     p[1] = user.y+50
 
+
+//     /* [ ... ] */
 //     let x1 = 0, y1 = 0,
 //     k = (e.pageY-p[1])/(e.pageX-p[0])
 
 
-
 //     /* [ СОЗДАЕМ ПУЛЮ ] */
 //     let bullet = document.createElement('div')
-//     bullet.style.margin = p[1]+'px 0 0 '+p[0]+'px'
+//     bullet.style.margin = `${p[1]}px 0 0 ${p[0]}px`
 //     bullet.setAttribute('class', 'bullet')
 //     map.append(bullet)
 
@@ -399,7 +314,7 @@ function random(min,max){
 //       if(y1>-500 && y1<500){
         
 //         /* [ ДВИГАЕМ ЭЛЕМЕНТ ПУЛЯ ] */
-//         bullet.style.margin = (y1+p[1])+'px 0 0 '+(x1+p[0])+'px'
+//         bullet.style.margin = `${y1+p[1]}px 0 0 ${x1+p[0]}px`
         
 //         /* [ ПРОВЕРЯЕМ ЧТО ПОД ЭЛЕМЕНТОМ ПУЛЯ ] */
 //         let cockshot = document.elementFromPoint(
@@ -408,10 +323,10 @@ function random(min,max){
 //         )
 
 //         /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ НА КРАЙ КАРТЫ УДАЛЯЕМ ЕЕ ] */
-//         if(bullet.getBoundingClientRect().x<0)   { bullet.remove() } 
-//         if(bullet.getBoundingClientRect().y<0)   { bullet.remove() } 
-//         if(bullet.getBoundingClientRect().x>1998){ bullet.remove() }
-//         if(bullet.getBoundingClientRect().y>1998){ bullet.remove() }
+//         if(bullet.getBoundingClientRect().x<0){ bullet.remove() } 
+//         if(bullet.getBoundingClientRect().y<0){ bullet.remove() } 
+//         if(bullet.getBoundingClientRect().x>mapWidth){ bullet.remove() }
+//         if(bullet.getBoundingClientRect().y>mapHeight){ bullet.remove() }
 
 
 
@@ -426,7 +341,7 @@ function random(min,max){
 //          * 
 //          */
 
-//         if(cockshot.classList == 'vrag'){
+//         if(cockshot.className == 'vrag'){
 
 //           /**
 //            *  [ Изменение шкалы жизни врага ]
@@ -512,7 +427,7 @@ function random(min,max){
 //          * 
 //          */
 
-//         if(cockshot.classList == 'wall' || cockshot.classList == 'block'){ 
+//         if(cockshot.className == 'wall' || cockshot.className == 'block'){ 
 //           // Удаляем пулю
 //           bullet.remove(); 
 //         }
@@ -530,7 +445,7 @@ function random(min,max){
 
 //         let color = ['orange','red','green','blue','pink',
 //         'brown','black','greenyellow','yellow','gray'];
-//         if(cockshot.classList == 'wall' && cockshot.style.background == 'white'){ 
+//         if(cockshot.className == 'wall' && cockshot.style.background == 'white'){ 
 //           cockshot.style.background = color[random(0,9)];
 //           cockshot.style.transition = '2s ease';
 //           setTimeout(() => { 
@@ -551,7 +466,7 @@ function random(min,max){
 //          * 
 //          */
 
-//         if(cockshot.classList == 'wall' && cockshot.style.border == '1px solid orange'){
+//         if(cockshot.className == 'wall' && cockshot.style.border == '1px solid orange'){
 //           // audio(random(0,4)) 
 //         }
 
@@ -571,6 +486,49 @@ function random(min,max){
 
 // }
 
+document.onclick = (e) => {
+
+  // marker(e.pageX-main.getBoundingClientRect().x,
+  // e.pageY-main.getBoundingClientRect().y+sy,'green')
+
+  let x = 0, y = 0, 
+  userX = user.x+50,  
+  userY = user.y+50,
+
+  pageX = e.pageX-main.getBoundingClientRect().x, 
+  pageY = e.pageY-main.getBoundingClientRect().y+sy, 
+
+  a = pageX-userX, 
+  b = pageY-userY,
+  k = b/a
+
+  for(let i=0; i<40; i++){
+
+    if(Math.abs(a) < Math.abs(b)){
+      (pageY>userY ? y+=10 : y-=10), x=y/k
+    } else {
+      (pageX>userX ? x+=10 : x-=10), y=k*x
+    }
+
+    let bullet = document.createElement('div')
+    bullet.setAttribute('class', 'bullet')
+    bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
+    if(i == 20) bullet.style.background = 'blue';
+    map.append(bullet)
+
+    /* [ ПРОВЕРЯЕМ ВО ЧТО ПОПАЛА ПУЛЯ ] */
+    let cockshot = document.elementFromPoint(
+      bullet.getBoundingClientRect().x,
+      bullet.getBoundingClientRect().y
+    )
+      
+    if(cockshot.className == 'bottom'){
+      break
+    }
+
+  } 
+
+}
 
 
 
@@ -605,10 +563,35 @@ for(let i=0; i<walls.length-1; i++){
 
 
 
+/* [ ИЗМЕНИТЬ ЗДОРОВЬЕ ] */
+function changeHealthUser(value){
+  let scale = document.getElementById('scale')
+  document.getElementById('health').style.display = 'block'
+  
+  if(value>75){  
+    scale.style.background = 'greenyellow'
+  } else if(value>50){
+    scale.style.background = 'yellow'
+  } else if(value>25){
+    scale.style.background = 'orange'
+  } else {
+    scale.style.background = 'red'
+  } 
+
+  user.health = value
+  document.getElementById('scale').style.width = value+'px'
+
+  setTimeout(() => {
+    document.getElementById('health').style.display = 'none'
+  }, 3000)
+}
+
+
+
 
 /* [ USER ] */
 let user = {
-  'x': 200, 'y': 150, 'health': 100, 'ammo': 120,
+  'x': 200, 'y': 150, 'health': 100, 'ammo': 100,
   'body': document.getElementsByClassName('user')[0],
   'add': () => { map.innerHTML += `
     <div class="user">
@@ -620,17 +603,6 @@ let user = {
 
 
 
-/* [ MARKER ] */
-function marker(x,y,z){
-  let a = document.createElement('div');
-  a.style.margin = y+'px 0 0 '+x+'px';
-  a.style.width = '2px';
-  a.style.height = '2px';
-  a.style.background = (z) ? z : 'red';
-  a.style.position = 'absolute';
-  a.style.zIndex = 3;
-  map.append(a);
-} 
 
 
 
@@ -674,17 +646,18 @@ function touch(){
      */
 
     if(elem[i].className == 'ammo'){
+      
+      /* [ УДАЛИТЬ ЯЩИК С ПАТРОНАМИ ] */
+      elem[i].style.display = 'none'
 
-      accoutrement(
-        parseInt(elem[i].getAttribute('x')),
-        parseInt(elem[i].getAttribute('y')),
-        'ammo'
-      )
-
-      elem[i].remove()
+      /* [ ВОЗРОДИТЬ ЯЩИК С ПАТРОНАМИ ЧЕРЕЗ ... ] */
+      setTimeout(() => {
+        elem[i].style.display = 'block'
+      }, 3000)
 
       /* [ ДОБАВИТЬ ПОЛЗОВАТЕЛЮ 10 ПАТРОНОВ ] */
-      if(user.ammo < 120) user.ammo += 10; break
+      if(user.ammo < 120) user.ammo += 10; 
+      break
     }
 
 
@@ -698,19 +671,16 @@ function touch(){
 
     if(elem[i].className == 'medic'){
 
-      accoutrement(
-        parseInt(elem[i].getAttribute('x')),
-        parseInt(elem[i].getAttribute('y')),
-        'medic'
-      )
+      /* [ УДАЛИТЬ АПТЕЧКУ ] */
+      elem[i].style.display = 'none'
 
-      elem[i].remove()
+      /* [ ВОЗРОДИТЬ АПТЕЧКУ ЧЕРЕЗ ... ] */
+      setTimeout(() => {
+        elem[i].style.display = 'block'
+      }, 3000)
 
-      /* [ ... ] */
-      user.health = 100
-      document.getElementById('scale').style.background = 'greenyellow'
-      document.getElementById('scale').style.width = user.health+'px'
-
+      /* [ ИЗМЕНИТЬ ЗДОРОВЬЕ ] */
+      changeHealthUser(100); 
       break
     }
 
@@ -725,7 +695,7 @@ function touch(){
       }if(i == 3 || i == 5 || i == 6){ 
         if(above) usr.style.zIndex = 1;
         if(i == 3) under = false;
-      } 
+      } continue
     } 
 
 

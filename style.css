@@ -29,7 +29,6 @@ section {
 /* [ USER ] */
 .user {
   background: url(img/user.png);
-  /* border: 1px solid yellow; */
   background-size: cover;
   margin: 150px 0 0 200px;
   position: absolute;
@@ -37,14 +36,14 @@ section {
   width: 100px;
   height: 100px;
   z-index: 3;
-  /* z-index: 1; */
 }
 
 #health {
-  border: 1px solid green;
-  margin: -15px 0 0 -1px;
+  border: 1px solid gray;
+  margin: -6px 0 0 -5px;
   position: absolute;
   display: none;
+  transform: rotate(-20deg);
   width: 100px;
   height: 10px;
 }
@@ -58,7 +57,6 @@ section {
 
 /* [ WALL ] */
 .wall {
-  /* border: 1px solid gray; */
   background: url(img/box.png);
   background-size: cover;
   position: absolute;
@@ -67,7 +65,19 @@ section {
   z-index: 2;
 }
 
-/* [ TSET ] */
+
+/* [ ACCOUTREMENT ] */
+.medic, .ammo {
+  /* border: 1px solid gray; */
+  z-index: 1;
+  position: absolute;
+  background-size: cover;
+  width: 100px;
+  height: 100px;
+}
+
+
+/* [ BOTTOM ] */
 .bottom {
   position: absolute;
 	width: 70px;
