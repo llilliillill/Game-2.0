@@ -1,12 +1,12 @@
 /* [ GAME SATTINGS ] */
 let map = document.querySelector('section'),
 main = document.querySelector('main'),
-mapWidth = 1600, mapHeight = 2050,
-sx = 0, sy = 0
+scrollX = 0, scrollY = 0
+
+//mapWidth = main.offsetWidth, mapHeight = main.scrollHeight,
+// console.log('mapWidth: '+mapWidth+' mapHeight: '+mapHeight)
 
 document.oncontextmenu = () => { 
-  sx=0, sy=0
-  document.querySelector('main').scrollTo(sx,sy)
   document.location = 'index.html'
   return false 
 }
@@ -488,19 +488,18 @@ function addObject(z,x,y){
 
 document.onclick = (e) => {
 
-  marker(e.pageX-main.getBoundingClientRect().x,
-  e.pageY-main.getBoundingClientRect().y+sy,'green')
+  marker(e.pageX-main.getBoundingClientRect().x+main.scrollLeft,
+  e.pageY-main.getBoundingClientRect().y+main.scrollTop,'green')
 
   let x = 0, y = 0, 
-  userX = user.x+50,  
-  userY = user.y+50,
+  userX = usr.offsetLeft+50,  
+  userY = usr.offsetTop+50,
 
-  pageX = e.pageX-main.getBoundingClientRect().x, 
-  pageY = e.pageY-main.getBoundingClientRect().y+sy, 
+  pageX = e.pageX-main.getBoundingClientRect().x+main.scrollLeft, 
+  pageY = e.pageY-main.getBoundingClientRect().y+main.scrollTop, 
 
-  a = pageX-userX, 
-  b = pageY-userY,
-  k = b/a
+  a = pageX-userX, b = pageY-userY, k = b/a 
+
 
   for(let i=0; i<40; i++){
 
@@ -517,26 +516,11 @@ document.onclick = (e) => {
     map.append(bullet)
 
 
-    //console.log('x: '+(x+userX).toFixed(0)+' y: '+(y+userY).toFixed(0))
-    //console.log('x: '+bullet.getBoundingClientRect().x,'y: '+bullet.getBoundingClientRect().y)
-
-
     /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ НА КРАЙ КАРТЫ УДАЛЯЕМ ЕЕ ] */
-    if(bullet.getBoundingClientRect().x < 
-    main.getBoundingClientRect().x) 
-    bullet.remove(); 
-
-    if(bullet.getBoundingClientRect().y < 
-    main.getBoundingClientRect().y) 
-    bullet.remove();
-
-    if(bullet.getBoundingClientRect().x > 
-    mapWidth+main.getBoundingClientRect().x) 
-    bullet.remove();
-
-    if(bullet.getBoundingClientRect().y > 
-    main.clientHeight+main.getBoundingClientRect().y) 
-    bullet.remove();
+    if(bullet.getBoundingClientRect().x < main.getBoundingClientRect().x){ bullet.remove(); break }
+    if(bullet.getBoundingClientRect().y < main.getBoundingClientRect().y){ bullet.remove(); break }
+    if(bullet.getBoundingClientRect().x > main.offsetWidth+main.getBoundingClientRect().x){ bullet.remove(); break }
+    if(bullet.getBoundingClientRect().y > main.clientHeight+main.getBoundingClientRect().y){ bullet.remove(); break }
 
 
     /* [ ПРОВЕРЯЕМ ВО ЧТО ПОПАЛА ПУЛЯ ] */
@@ -546,10 +530,8 @@ document.onclick = (e) => {
     )
 
     /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ В СТЕНУ ] */
-    if(cockshot.className == 'bottom'){
-      break
-    }
-
+    if(cockshot.className == 'bottom') break;
+    
   } 
 }
 
@@ -653,8 +635,8 @@ function touch(){
 
 
   /* [ ОПРЕДЕЛЯЕМ ГРАНИЦИ КАРТЫ ] */
-  if(user.x<0){ user.x+=2 } if(user.x>mapWidth-100) { user.x-=2 }
-  if(user.y<0){ user.y+=2 } if(user.y>mapHeight-100){ user.y-=2 }
+  if(user.x<0){ user.x+=2 } if(user.x>main.offsetWidth-100) { user.x-=2 }
+  if(user.y<0){ user.y+=2 } if(user.y>main.scrollHeight-100){ user.y-=2 }
 
 
   // В elem попадает элемент с которым произошло столкновение
@@ -703,7 +685,7 @@ function touch(){
       }, 3000)
 
       /* [ ИЗМЕНИТЬ ЗДОРОВЬЕ ] */
-      changeHealthUser(100); 
+      changeHealthUser(100)
       break
     }
 
@@ -729,10 +711,10 @@ function touch(){
      */
 
     if(elem[i].className == 'bottom'){
-      if(i == 0 || i == 7) user.x+=2, sx+=2;
-      if(i == 3 || i == 4) user.x-=2, sx-=2;
-      if(i == 1 || i == 2) user.y+=2, sy+=2;
-      if(i == 6 || i == 5) user.y-=2, sy-=2;
+      if(i == 0 || i == 7) user.x+=2, scrollX+=2;
+      if(i == 3 || i == 4) user.x-=2, scrollX-=2;
+      if(i == 1 || i == 2) user.y+=2, scrollY+=2;
+      if(i == 6 || i == 5) user.y-=2, scrollY-=2;
       break
     }
 
@@ -744,15 +726,15 @@ function touch(){
      * 
      */
 
-    if(elem[i].className == 'block'){
-      let j = elem[i].getAttribute('index')
-      if(i == 0 || i == 7) block[j][0]-=2;
-      if(i == 3 || i == 4) block[j][0]+=2;
-      if(i == 1 || i == 2) block[j][1]-=2;
-      if(i == 6 || i == 5) block[j][1]+=2;
-      elem[i].style.margin = `${block[j][1]}
-      px 0 0 ${block[j][0]}px`; break
-    }
+    // if(elem[i].className == 'block'){
+    //   let j = elem[i].getAttribute('index')
+    //   if(i == 0 || i == 7) block[j][0]-=2;
+    //   if(i == 3 || i == 4) block[j][0]+=2;
+    //   if(i == 1 || i == 2) block[j][1]-=2;
+    //   if(i == 6 || i == 5) block[j][1]+=2;
+    //   elem[i].style.margin = `${block[j][1]}
+    //   px 0 0 ${block[j][0]}px`; break
+    // }
 
 
 
@@ -769,12 +751,9 @@ function touch(){
   }
 
   /* [ ДВИЖЕНИЕ ЭКРАНА ЗА ПОЛЬЗОВАТЕЛЕМ ] */
-  document.querySelector('main').scrollTo(sx,sy)
+  document.querySelector('main').scrollTo(scrollX,scrollY)
   usr.style.margin = `${user.y}px 0 0 ${user.x}px`
 }
-
-
-
 
 
 
@@ -790,11 +769,13 @@ let intervalX = 0, intervalY = 0
 
 document.onkeydown = (e) => {
   switch(e.code){
-    case 'KeyW': if(!intervalY) intervalY = setInterval(() => { touch(), user.y-=2, sy-=2; }, 10); break
-    case 'KeyS': if(!intervalY) intervalY = setInterval(() => { touch(), user.y+=2, sy+=2; }, 10); break
-    case 'KeyA': if(!intervalX) intervalX = setInterval(() => { touch(), user.x-=2, sx-=2; }, 10); break
-    case 'KeyD': if(!intervalX) intervalX = setInterval(() => { touch(), user.x+=2, sx+=2; }, 10); break
+    case 'KeyW': if(!intervalY) intervalY = setInterval(() => { touch(), user.y-=2, scrollY-=2; }, 10); break
+    case 'KeyS': if(!intervalY) intervalY = setInterval(() => { touch(), user.y+=2, scrollY+=2; }, 10); break
+    case 'KeyA': if(!intervalX) intervalX = setInterval(() => { touch(), user.x-=2, scrollX-=2; }, 10); break
+    case 'KeyD': if(!intervalX) intervalX = setInterval(() => { touch(), user.x+=2, scrollX+=2; }, 10); break
   }
+  // console.log('scrollX: '+scrollX+' scrollY: '+scrollY)
+  // console.log('x: '+usr.offsetLeft+' y: '+usr.offsetTop)
 }
 
 document.onkeyup = (e) => {
@@ -805,6 +786,8 @@ document.onkeyup = (e) => {
     case 'KeyD': clearInterval(intervalX), intervalX = 0; break
   }
 }
+
+
 
 
 /* [ ПОВЕРНУТЬ ПОЛЬЗОВАТЕЛЯ ПРИ КЛИКЕ ] */
