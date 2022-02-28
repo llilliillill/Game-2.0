@@ -97,6 +97,7 @@ let gamer = {
 
       let bottom = document.createElement('div')
       bottom.setAttribute('class', 'bottom')
+      bottom.style.background = (gamer['who'][i] == 'enemy' ? 'rgba(255, 0, 0, 0)' : 'rgba(0, 128, 0, 0)')
       bottom.style.margin = `${gamer['position'][y]+65}px 0 0 ${gamer['position'][x]+15}px`
       section.append(bottom)
       x+=2, y+=2
@@ -129,7 +130,6 @@ function shot(index, shotX, shotY){
   // e.pageY-main.getBoundingClientRect().y+main.scrollTop,'green')
 
   let shooter = section.querySelector(`[index="${index}"]`),
-  bottom = section.getElementsByClassName('bottom')[index],
 
   x = 0, y = 0, 
   userX = shooter.offsetLeft+50, 
@@ -183,14 +183,12 @@ function shot(index, shotX, shotY){
     )
 
     /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ В СТЕНУ ] */
-    if((bottom.getBoundingClientRect().x 
-    !== cockshot.getBoundingClientRect().x) 
-    && cockshot.className == 'bottom'){ 
+    if(cockshot.className == 'bottom' && cockshot.style.background == 'rgba(0, 0, 0, 0)'){ 
       bullet.remove(); break 
     }
 
     /* [ ЕСЛИ ПУЛЯ ПОПАЛА ВО ВРАГА ] */
-    if(shooter.className != 'enemy' && cockshot.className == 'enemy'){
+    if(shooter.className != 'enemy' && cockshot.className == 'enemy'){ 
       let index = cockshot.getAttribute('index')
       changeHealthGamer(index, -15)
       bullet.remove()
@@ -227,6 +225,7 @@ function addWall(x,y){
 
   let bottom = document.createElement('div')
   bottom.setAttribute('class', 'bottom')
+  bottom.style.background = 'rgba(0, 0, 0, 0)'
   bottom.style.margin = `${y+65}px 0 0 ${x+15}px`
   section.append(bottom)
 }
