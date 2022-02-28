@@ -4,10 +4,9 @@ let main = document.querySelector('main'),
     section = document.querySelector('section'),
     user = document.getElementsByClassName('user'),
     enemy = document.getElementsByClassName('enemy'),
-    scrollX = 0, scrollY = 0
+    scrollX = 0, scrollY = 0, above = true, under = true 
 
   
-
 document.oncontextmenu = () => {
   document.location = 'index.html' 
   return false
@@ -107,26 +106,41 @@ let gamer = {
 
 
 
+/* [ ... ] */
+document.onclick = (e) => { shot(0, e.pageX, e.pageY) }
 
-document.onclick = (e) => {
+
+/* [ ОБСТРЕЛЯТЬ ПОЛЬЗОВАТЕЛЯ ] */
+let deg = 220;
+for(let i=1; i<=4; i++){
+  setTimeout(() => {
+    shot(1, 200, deg)
+    deg += 50;
+  }, i*1000)
+}
+
+
+function shot(index, shotX, shotY){
 
   // marker(e.pageX-main.getBoundingClientRect().x+main.scrollLeft,
   // e.pageY-main.getBoundingClientRect().y+main.scrollTop,'green')
 
-  let x = 0, y = 0, 
-  userX = user[0].offsetLeft+50,  
-  userY = user[0].offsetTop+50,
+  let shooter = section.querySelector(`[index="${index}"]`),
 
-  pageX = e.pageX-main.getBoundingClientRect().x+main.scrollLeft, 
-  pageY = e.pageY-main.getBoundingClientRect().y+main.scrollTop, 
+  x = 0, y = 0, 
+  userX = shooter.offsetLeft+50,  
+  userY = shooter.offsetTop+50,
+
+  pageX = shotX-main.getBoundingClientRect().x+main.scrollLeft, 
+  pageY = shotY-main.getBoundingClientRect().y+main.scrollTop, 
 
   a = pageX-userX, b = pageY-userY, k = b/a 
 
 
   /* [ СОЗДАТЬ ПУЛЮ ] */
-  let bullet = document.createElement('div')
-  bullet.setAttribute('class', 'bullet')
-  section.append(bullet)
+  // let bullet = document.createElement('div')
+  // bullet.setAttribute('class', 'bullet')
+  // section.append(bullet)
 
 
   for(let i=0; i<=40; i++){
@@ -137,19 +151,19 @@ document.onclick = (e) => {
       (pageX>userX ? x+=10 : x-=10), y=k*x
     }
 
-    // let bullet = document.createElement('div')
-    // bullet.setAttribute('class', 'bullet')
-    // bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
-    // if(i == 39) bullet.style.background = 'blue';
-    // section.append(bullet)
-
+    let bullet = document.createElement('div')
+    bullet.setAttribute('class', 'bullet')
     bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
+    if(i == 40) bullet.style.background = 'blue';
+    section.append(bullet)
 
-    if(i == 40){
-      setTimeout(() => {
-        bullet.remove()
-      }, 1000)
-    }
+    // bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
+
+    // if(i == 40){
+    //   setTimeout(() => {
+    //     bullet.remove()
+    //   }, 1000)
+    // }
 
     /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ НА КРАЙ КАРТЫ УДАЛЯЕМ ЕЕ ] */
     if(bullet.getBoundingClientRect().x < main.getBoundingClientRect().x){ bullet.remove(); break }
@@ -168,9 +182,18 @@ document.onclick = (e) => {
     if(cockshot.className == 'bottom'){ bullet.remove(); break }
 
     /* [ ЕСЛИ ПУЛЯ ПОПАЛА ВО ВРАГА ] */
-    if(cockshot.className == 'enemy'){
+    if(shooter.className != 'enemy' && cockshot.className == 'enemy'){
       let index = cockshot.getAttribute('index')
-      changeHealthGamer(index, -25)
+      changeHealthGamer(index, -15)
+      bullet.remove()
+      break
+    }
+
+    /* [ ЕСЛИ ПУЛЯ ПОПАЛА В ПОЛЬЗОВАТЕЛЯ ] */
+    if(shooter.className != 'user' && cockshot.className == 'user'){
+      // let index = cockshot.getAttribute('index')
+      let index = 0;
+      changeHealthGamer(index, -15)
       bullet.remove()
       break
     }
@@ -217,11 +240,11 @@ function changeHealthGamer(index, value){
   let health = section.getElementsByClassName('health')[index]
   health.style.display = 'block'
   
-  if(value>75){  
+  if(gamer['health'][index]>75){  
     scale.style.background = 'greenyellow'
-  } else if(value>50){
+  } else if(gamer['health'][index]>50){
     scale.style.background = 'yellow'
-  } else if(value>25){
+  } else if(gamer['health'][index]>25){
     scale.style.background = 'orange'
   } else {
     scale.style.background = 'red'
@@ -238,9 +261,9 @@ function changeHealthGamer(index, value){
     revival(index)
   }
 
-  setTimeout(() => {
-    health.style.display = 'none'
-  }, 3000)
+  // setTimeout(() => {
+  //   health.style.display = 'none'
+  // }, 3000)
 }
 
 /* [ ВОЗРОЖДЕНИЕ ] */
@@ -252,7 +275,6 @@ function revival(index){
 
 
 /* [ СЦЕНАРИЙ СОПРИКОСНОВЕНИЯ С ОБЬЕКТОМ ПРИ ДВИЖЕНИИ ] */
-above = true, under = true 
 function touch(){
 
   let elem = [
