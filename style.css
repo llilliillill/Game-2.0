@@ -27,7 +27,7 @@ section {
 
 
 /* [ USER ] */
-.user {
+.user, .enemy {
   background: url(img/user.png);
   background-size: cover;
   margin: 150px 0 0 200px;
@@ -38,7 +38,7 @@ section {
   z-index: 3;
 }
 
-#health {
+.health {
   border: 1px solid gray;
   margin: -6px 0 0 -5px;
   position: absolute;
@@ -48,7 +48,7 @@ section {
   height: 10px;
 }
 
-#scale {
+.scale {
   background: greenyellow;
   width: 100px;
   height: 10px;
@@ -68,8 +68,7 @@ section {
 
 /* [ ACCOUTREMENT ] */
 .medic, .ammo {
-  /* border: 1px solid gray; */
-  z-index: 1;
+  z-index: 3;
   position: absolute;
   background-size: cover;
   width: 100px;
@@ -86,7 +85,6 @@ section {
 	transform: skew(-40deg);
 	background: rgba(255, 0, 0, 0);
 }
-
 
 
 /* [ BULLET ] */
