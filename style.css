@@ -35,6 +35,10 @@ section {
   display: block;
   width: 100px;
   height: 100px;
+  z-index: 4;
+}
+
+.enemy {
   z-index: 3;
 }
 
@@ -68,7 +72,7 @@ section {
 
 /* [ ACCOUTREMENT ] */
 .medic, .ammo {
-  z-index: 3;
+  z-index: 4;
   position: absolute;
   background-size: cover;
   width: 100px;
@@ -81,7 +85,7 @@ section {
   position: absolute;
 	width: 70px;
 	height: 35px;
-  z-index: 4;
+  z-index: 5;
 	transform: skew(-40deg);
 	background: rgba(255, 0, 0, 0);
 }

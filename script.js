@@ -21,16 +21,16 @@ document.oncontextmenu = () => {
 
 
 /* [ MARKER ] */
-// function marker(x,y,z){
-//   let a = document.createElement('div');
-//   a.style.margin = y+'px 0 0 '+x+'px';
-//   a.style.width = '2px';
-//   a.style.height = '2px';
-//   a.style.background = (z) ? z : 'red';
-//   a.style.position = 'absolute';
-//   a.style.zIndex = 3;
-//   map.append(a);
-// } 
+function marker(x,y,z){
+  let a = document.createElement('div');
+  a.style.margin = y+'px 0 0 '+x+'px';
+  a.style.width = '2px';
+  a.style.height = '2px';
+  a.style.background = (z) ? z : 'red';
+  a.style.position = 'absolute';
+  a.style.zIndex = 3;
+  section.append(a);
+} 
 
 
 
@@ -94,6 +94,11 @@ let gamer = {
       let scale = document.createElement('div')
       scale.setAttribute('class','scale')
       health.append(scale)
+
+      let bottom = document.createElement('div')
+      bottom.setAttribute('class', 'bottom')
+      bottom.style.margin = `${gamer['position'][y]+65}px 0 0 ${gamer['position'][x]+15}px`
+      section.append(bottom)
       x+=2, y+=2
     }
   }
@@ -104,20 +109,18 @@ let gamer = {
 
 
 
-
-
 /* [ ... ] */
 document.onclick = (e) => { shot(0, e.pageX, e.pageY) }
 
 
 /* [ ОБСТРЕЛЯТЬ ПОЛЬЗОВАТЕЛЯ ] */
-let deg = 220;
-for(let i=1; i<=4; i++){
-  setTimeout(() => {
-    shot(1, 200, deg)
-    deg += 50;
-  }, i*1000)
-}
+// let deg = 220;
+// for(let i=1; i<=4; i++){
+//   setTimeout(() => {
+//     shot(1, 200, deg)
+//     deg += 50;
+//   }, i*1000)
+// }
 
 
 function shot(index, shotX, shotY){
@@ -126,10 +129,11 @@ function shot(index, shotX, shotY){
   // e.pageY-main.getBoundingClientRect().y+main.scrollTop,'green')
 
   let shooter = section.querySelector(`[index="${index}"]`),
+  bottom = section.getElementsByClassName('bottom')[index],
 
   x = 0, y = 0, 
-  userX = shooter.offsetLeft+50,  
-  userY = shooter.offsetTop+50,
+  userX = shooter.offsetLeft+50, 
+  userY = shooter.offsetTop+50, 
 
   pageX = shotX-main.getBoundingClientRect().x+main.scrollLeft, 
   pageY = shotY-main.getBoundingClientRect().y+main.scrollTop, 
@@ -179,7 +183,11 @@ function shot(index, shotX, shotY){
     )
 
     /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ В СТЕНУ ] */
-    if(cockshot.className == 'bottom'){ bullet.remove(); break }
+    if((bottom.getBoundingClientRect().x 
+    !== cockshot.getBoundingClientRect().x) 
+    && cockshot.className == 'bottom'){ 
+      bullet.remove(); break 
+    }
 
     /* [ ЕСЛИ ПУЛЯ ПОПАЛА ВО ВРАГА ] */
     if(shooter.className != 'enemy' && cockshot.className == 'enemy'){
@@ -191,8 +199,7 @@ function shot(index, shotX, shotY){
 
     /* [ ЕСЛИ ПУЛЯ ПОПАЛА В ПОЛЬЗОВАТЕЛЯ ] */
     if(shooter.className != 'user' && cockshot.className == 'user'){
-      // let index = cockshot.getAttribute('index')
-      let index = 0;
+      let index = cockshot.getAttribute('index')
       changeHealthGamer(index, -15)
       bullet.remove()
       break
@@ -204,11 +211,9 @@ function shot(index, shotX, shotY){
 
 
 
-
-
 /* [ ADD WALLS ] */
 let walls = [
-  60,0, 132,0, 30,36, 0,72,
+  60,2, 132,2, 30,36, 2,72,
   460,72, 532,72, 604,72,
   820,72, 892,72, 320,350,
   604,350, 820,350, 892,350
@@ -220,10 +225,10 @@ function addWall(x,y){
   wall.style.margin = `${y}px 0 0 ${x}px`
   section.append(wall)
 
-  let test = document.createElement('div')
-  test.setAttribute('class', 'bottom')
-  test.style.margin = `${y+65}px 0 0 ${x+15}px`
-  section.append(test)
+  let bottom = document.createElement('div')
+  bottom.setAttribute('class', 'bottom')
+  bottom.style.margin = `${y+65}px 0 0 ${x+15}px`
+  section.append(bottom)
 }
 
 for(let i=0; i<walls.length-1; i++){
@@ -269,39 +274,58 @@ function changeHealthGamer(index, value){
 /* [ ВОЗРОЖДЕНИЕ ] */
 function revival(index){
   section.querySelector(`[index="${index}"]`).style.display = 'none'
+  section.getElementsByClassName('bottom')[index].style.display = 'none'
 }
 
 
 
+// section.getElementsByClassName('bottom')[0].style.background = 'gray'
+
+// marker(gamer['position'][0]+27, gamer['position'][1]+64,'yellow')  // 0
+// marker(gamer['position'][0]+31, gamer['position'][1]+62,'orange')  // 1
+// marker(gamer['position'][0]+98, gamer['position'][1]+62,'red')  // 2
+// marker(gamer['position'][0]+100,gamer['position'][1]+66,'red')  // 3
+// marker(gamer['position'][0]+72, gamer['position'][1]+100,'red') // 4
+// marker(gamer['position'][0]+68, gamer['position'][1]+102,'red') // 5
+// marker(gamer['position'][0],    gamer['position'][1]+102,'red') // 6
+// marker(gamer['position'][0]-2,  gamer['position'][1]+100,'red') // 7
+
+
 
 /* [ СЦЕНАРИЙ СОПРИКОСНОВЕНИЯ С ОБЬЕКТОМ ПРИ ДВИЖЕНИИ ] */
-function touch(){
+function touch(index){
 
-  let elem = [
-    document.elementFromPoint(user[0].getBoundingClientRect().x+27, user[0].getBoundingClientRect().y+66),  // 0
-    document.elementFromPoint(user[0].getBoundingClientRect().x+31, user[0].getBoundingClientRect().y+64),  // 1
-    document.elementFromPoint(user[0].getBoundingClientRect().x+98, user[0].getBoundingClientRect().y+64),  // 2
-    document.elementFromPoint(user[0].getBoundingClientRect().x+100,user[0].getBoundingClientRect().y+66),  // 3
-    document.elementFromPoint(user[0].getBoundingClientRect().x+72, user[0].getBoundingClientRect().y+100), // 4
-    document.elementFromPoint(user[0].getBoundingClientRect().x+68, user[0].getBoundingClientRect().y+102), // 5
-    document.elementFromPoint(user[0].getBoundingClientRect().x,    user[0].getBoundingClientRect().y+102), // 6
-    document.elementFromPoint(user[0].getBoundingClientRect().x-2,  user[0].getBoundingClientRect().y+100), // 7
-    document.elementFromPoint(user[0].getBoundingClientRect().x-2,  user[0].getBoundingClientRect().y+36),  // 8
-    document.elementFromPoint(user[0].getBoundingClientRect().x+30, user[0].getBoundingClientRect().y-2),   // 9
-    document.elementFromPoint(user[0].getBoundingClientRect().x+100,user[0].getBoundingClientRect().y-2)    // 10
+  let shooter = section.querySelector(`[index="${index}"]`), 
+  bottom = section.getElementsByClassName('bottom')[index], 
+  x = 0, y = 1,
+
+  elem = [
+    document.elementFromPoint(shooter.getBoundingClientRect().x+27, shooter.getBoundingClientRect().y+64),  // 0
+    document.elementFromPoint(shooter.getBoundingClientRect().x+31, shooter.getBoundingClientRect().y+62),  // 1
+    document.elementFromPoint(shooter.getBoundingClientRect().x+98, shooter.getBoundingClientRect().y+62),  // 2
+    document.elementFromPoint(shooter.getBoundingClientRect().x+100,shooter.getBoundingClientRect().y+66),  // 3
+    document.elementFromPoint(shooter.getBoundingClientRect().x+72, shooter.getBoundingClientRect().y+100), // 4
+    document.elementFromPoint(shooter.getBoundingClientRect().x+68, shooter.getBoundingClientRect().y+102), // 5
+    document.elementFromPoint(shooter.getBoundingClientRect().x,    shooter.getBoundingClientRect().y+102), // 6
+    document.elementFromPoint(shooter.getBoundingClientRect().x-2,  shooter.getBoundingClientRect().y+100), // 7
+    document.elementFromPoint(shooter.getBoundingClientRect().x-2,  shooter.getBoundingClientRect().y+36),  // 8
+    document.elementFromPoint(shooter.getBoundingClientRect().x+30, shooter.getBoundingClientRect().y-2),   // 9
+    document.elementFromPoint(shooter.getBoundingClientRect().x+100,shooter.getBoundingClientRect().y-2)    // 10
   ]
 
 
+  /* [ ПОЗИЦИИ КООРДИНАТ В МАССИВЕ GAMER ] */
+  x+=index+index, y+=index+index
+
   /* [ ОПРЕДЕЛЯЕМ ГРАНИЦИ КАРТЫ ] */
-  if(gamer['position'][0]<0){ gamer['position'][0]+=2 } 
-  if(gamer['position'][1]<0){ gamer['position'][1]+=2 } 
-  if(gamer['position'][0]>main.offsetWidth-100) { gamer['position'][0]-=2 }
-  if(gamer['position'][1]>main.scrollHeight-100){ gamer['position'][1]-=2 }
+  if(gamer['position'][x]<0){ gamer['position'][x]+=2 } 
+  if(gamer['position'][y]<0){ gamer['position'][y]+=2 } 
+  if(gamer['position'][x]>main.offsetWidth-100) { gamer['position'][x]-=2 }
+  if(gamer['position'][y]>main.scrollHeight-100){ gamer['position'][y]-=2 }
 
 
   // В elem попадает элемент с которым произошло столкновение
   for(let i=0; i<elem.length; i++){
-
 
     /* [ ЕСЛИ СОПРЕКОСНУЛИСЬ С ПОТРОНАМИ ... ] */
     if(elem[i].className == 'ammo'){
@@ -311,7 +335,6 @@ function touch(){
         elem[i].style.display = 'block'
       }, 3000)
 
-      let index = elem[i].getAttribute('index')
       if(gamer['ammo'][index] < 120) gamer['ammo'][index] += 10; 
       break
     }
@@ -325,19 +348,19 @@ function touch(){
         elem[i].style.display = 'block'
       }, 3000)
 
-      let index = elem[i].getAttribute('index')
       changeHealthGamer(index, 100)
       break
     }
 
 
     /* [ КОГО ОТОБРАЗИТЬ СВЕРХУ ] */
-    if(elem[i].className == 'wall'){
+    if(elem[i].className == 'wall' || elem[i].className == 'enemy'){
+
       if(i == 8 || i == 9 || i == 10){
-        if(under) user[0].style.zIndex = 3;
+        if(under) shooter.style.zIndex = 4;
         if(i == 8) above = false;
       }if(i == 3 || i == 5 || i == 6){ 
-        if(above) user[0].style.zIndex = 1;
+        if(above) shooter.style.zIndex = 1;
         if(i == 3) under = false;
       } continue
     } 
@@ -345,10 +368,10 @@ function touch(){
 
     /* [ ЕСЛИ СОПРЕКОСНУЛИСЬ С СТЕНОЙ ... ] */
     if(elem[i].className == 'bottom'){
-      if(i == 0 || i == 7) gamer['position'][0]+=2, scrollX+=2;
-      if(i == 3 || i == 4) gamer['position'][0]-=2, scrollX-=2;
-      if(i == 1 || i == 2) gamer['position'][1]+=2, scrollY+=2;
-      if(i == 6 || i == 5) gamer['position'][1]-=2, scrollY-=2;
+      if(i == 0 || i == 7){ gamer['position'][x]+=2; if(index == 0){ scrollX+=2 } }
+      if(i == 3 || i == 4){ gamer['position'][x]-=2; if(index == 0){ scrollX-=2 } }
+      if(i == 1 || i == 2){ gamer['position'][y]+=2; if(index == 0){ scrollY+=2 } }
+      if(i == 6 || i == 5){ gamer['position'][y]-=2; if(index == 0){ scrollY-=2 } }
       break
     }
 
@@ -361,8 +384,9 @@ function touch(){
   }
 
   /* [ ДВИЖЕНИЕ ЭКРАНА ЗА ПОЛЬЗОВАТЕЛЕМ ] */
-  document.querySelector('main').scrollTo(scrollX,scrollY)
-  user[0].style.margin = `${gamer['position'][1]}px 0 0 ${gamer['position'][0]}px`
+  if(index == 0) document.querySelector('main').scrollTo(scrollX,scrollY);
+  shooter.style.margin = `${gamer['position'][y]}px 0 0 ${gamer['position'][x]}px`
+  bottom.style.margin = `${gamer['position'][y]+65}px 0 0 ${gamer['position'][x]+15}px`
 }
 
 
@@ -379,10 +403,10 @@ let intervalX = 0, intervalY = 0
 
 document.onkeydown = (e) => {
   switch(e.code){
-    case 'KeyW': if(!intervalY) intervalY = setInterval(() => { touch(), gamer['position'][1]-=2, scrollY-=2; }, 10); break
-    case 'KeyS': if(!intervalY) intervalY = setInterval(() => { touch(), gamer['position'][1]+=2, scrollY+=2; }, 10); break
-    case 'KeyA': if(!intervalX) intervalX = setInterval(() => { touch(), gamer['position'][0]-=2, scrollX-=2; }, 10); break
-    case 'KeyD': if(!intervalX) intervalX = setInterval(() => { touch(), gamer['position'][0]+=2, scrollX+=2; }, 10); break
+    case 'KeyW': if(!intervalY) intervalY = setInterval(() => { touch(0), gamer['position'][1]-=2, scrollY-=2; }, 10); break
+    case 'KeyS': if(!intervalY) intervalY = setInterval(() => { touch(0), gamer['position'][1]+=2, scrollY+=2; }, 10); break
+    case 'KeyA': if(!intervalX) intervalX = setInterval(() => { touch(0), gamer['position'][0]-=2, scrollX-=2; }, 10); break
+    case 'KeyD': if(!intervalX) intervalX = setInterval(() => { touch(0), gamer['position'][0]+=2, scrollX+=2; }, 10); break
   }
 }
 
