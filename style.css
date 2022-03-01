@@ -6,6 +6,7 @@
 
 body {
   background: gray;
+  overflow: hidden;
 }
 
 
@@ -38,9 +39,7 @@ section {
   z-index: 4;
 }
 
-.enemy {
-  z-index: 3;
-}
+.enemy { z-index: 3; }
 
 .health {
   border: 1px solid gray;
@@ -72,7 +71,7 @@ section {
 
 /* [ ACCOUTREMENT ] */
 .medic, .ammo {
-  z-index: 4;
+  z-index: 3;
   position: absolute;
   background-size: cover;
   width: 100px;
@@ -87,7 +86,6 @@ section {
 	height: 35px;
   z-index: 5;
 	transform: skew(-40deg);
-  /* background: rgba(0, 0, 0, 0); */
 }
 
 

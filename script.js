@@ -35,20 +35,6 @@ function marker(x,y,z){
 
 
 
-/* [ ACCOUTREMENT ] */
-function addObject(z,x,y){ 
-  section.innerHTML += `
-  <div class="${z}"
-  style="background:url(img/${z}.png) 
-  no-repeat;margin:${y}px 0 0 ${x}px;
-  display:block;">
-  </div>`
-} 
-addObject('ammo',570,400)
-addObject('medic',780,400)
-
-
-
 
 
 
@@ -62,8 +48,8 @@ let gamer = {
   ],
 
   'position': [
-    200,150, 500,150, 600,150, 700,150, 
-    800,150, 900,150, 1000,150
+    200,200, 400,200, 500,200, 730,200, 
+    800,200, 900,200, 1000,200
   ],
 
   'health': [
@@ -209,6 +195,13 @@ function shot(index, shotX, shotY){
 
 
 
+
+
+
+
+
+
+
 /* [ ADD WALLS ] */
 let walls = [
   60,2, 132,2, 30,36, 2,72,
@@ -235,6 +228,41 @@ for(let i=0; i<walls.length-1; i++){
   addWall(walls[i],walls[j])
   i++
 }
+
+
+
+
+/* [ ACCOUTREMENT ] */
+let ammo = 0, medic = 0
+function addObject(z,x,y){ 
+  let obj = document.createElement('div')
+  obj.style.background = `url(img/${z}.png)`
+  obj.style.margin = `${y}px 0 0 ${x}px`
+  obj.setAttribute('class', z)
+  obj.style.display = 'block'
+  section.append(obj)
+
+  let bottom = document.createElement('div')
+  bottom.setAttribute('class', 'bottom')
+  bottom.setAttribute('index', (z == 'medic' ? (medic, medic++) : (ammo, ammo++)))
+  bottom.style.background = (z == 'medic' ? 'rgba(255, 255, 0, 0)' : 'rgba(0, 0, 255, 0)')
+  bottom.style.margin = `${y+65}px 0 0 ${x+15}px`
+  section.append(bottom)
+} 
+addObject('ammo',570,400)
+addObject('medic',780,400)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -265,9 +293,9 @@ function changeHealthGamer(index, value){
     revival(index)
   }
 
-  // setTimeout(() => {
-  //   health.style.display = 'none'
-  // }, 3000)
+  setTimeout(() => {
+    health.style.display = 'none'
+  }, 3000)
 }
 
 /* [ ВОЗРОЖДЕНИЕ ] */
@@ -279,15 +307,14 @@ function revival(index){
 
 
 // section.getElementsByClassName('bottom')[0].style.background = 'gray'
-
 // marker(gamer['position'][0]+27, gamer['position'][1]+64,'yellow')  // 0
 // marker(gamer['position'][0]+31, gamer['position'][1]+62,'orange')  // 1
-// marker(gamer['position'][0]+98, gamer['position'][1]+62,'red')  // 2
-// marker(gamer['position'][0]+100,gamer['position'][1]+66,'red')  // 3
-// marker(gamer['position'][0]+72, gamer['position'][1]+100,'red') // 4
-// marker(gamer['position'][0]+68, gamer['position'][1]+102,'red') // 5
-// marker(gamer['position'][0],    gamer['position'][1]+102,'red') // 6
-// marker(gamer['position'][0]-2,  gamer['position'][1]+100,'red') // 7
+// marker(gamer['position'][0]+98, gamer['position'][1]+62,'red')     // 2
+// marker(gamer['position'][0]+100,gamer['position'][1]+66,'red')     // 3
+// marker(gamer['position'][0]+72, gamer['position'][1]+100,'red')    // 4
+// marker(gamer['position'][0]+68, gamer['position'][1]+102,'red')    // 5
+// marker(gamer['position'][0],    gamer['position'][1]+102,'red')    // 6
+// marker(gamer['position'][0]-2,  gamer['position'][1]+100,'red')    // 7
 
 
 
@@ -312,7 +339,6 @@ function touch(index){
     document.elementFromPoint(shooter.getBoundingClientRect().x+100,shooter.getBoundingClientRect().y-2)    // 10
   ]
 
-
   /* [ ПОЗИЦИИ КООРДИНАТ В МАССИВЕ GAMER ] */
   x+=index+index, y+=index+index
 
@@ -323,15 +349,21 @@ function touch(index){
   if(gamer['position'][y]>main.scrollHeight-100){ gamer['position'][y]-=2 }
 
 
+
   // В elem попадает элемент с которым произошло столкновение
   for(let i=0; i<elem.length; i++){
 
     /* [ ЕСЛИ СОПРЕКОСНУЛИСЬ С ПОТРОНАМИ ... ] */
-    if(elem[i].className == 'ammo'){
+    if(elem[i].style.background == 'rgba(0, 0, 255, 0)'){ 
        elem[i].style.display = 'none'
+
+      let ammo = section.getElementsByClassName('ammo')
+      [elem[i].getAttribute('index')]
+      ammo.style.display = 'none'
 
       setTimeout(() => {
         elem[i].style.display = 'block'
+        ammo.style.display = 'block'
       }, 3000)
 
       if(gamer['ammo'][index] < 120) gamer['ammo'][index] += 10; 
@@ -339,12 +371,18 @@ function touch(index){
     }
 
 
+
     /* [ ЕСЛИ СОПРЕКОСНУЛИСЬ С АПТЕЧКОЙ ... ] */
-    if(elem[i].className == 'medic'){
+    if(elem[i].style.background == 'rgba(255, 255, 0, 0)'){ 
        elem[i].style.display = 'none'
 
+      let medic = section.getElementsByClassName('medic')
+      [elem[i].getAttribute('index')]
+      medic.style.display = 'none'
+       
       setTimeout(() => {
         elem[i].style.display = 'block'
+        medic.style.display = 'block'
       }, 3000)
 
       changeHealthGamer(index, 100)
@@ -352,8 +390,10 @@ function touch(index){
     }
 
 
+
     /* [ КОГО ОТОБРАЗИТЬ СВЕРХУ ] */
-    if(elem[i].className == 'wall' || elem[i].className == 'enemy'){
+    if(elem[i].className == 'wall' || 
+       elem[i].className == 'enemy'){
 
       if(i == 8 || i == 9 || i == 10){
         if(under) shooter.style.zIndex = 4;
@@ -387,9 +427,6 @@ function touch(index){
   shooter.style.margin = `${gamer['position'][y]}px 0 0 ${gamer['position'][x]}px`
   bottom.style.margin = `${gamer['position'][y]+65}px 0 0 ${gamer['position'][x]+15}px`
 }
-
-
-
 
 
 
