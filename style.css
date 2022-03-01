@@ -36,10 +36,8 @@ section {
   display: block;
   width: 100px;
   height: 100px;
-  z-index: 4;
 }
 
-.enemy { z-index: 3; }
 
 .health {
   border: 1px solid gray;
@@ -65,13 +63,11 @@ section {
   position: absolute;
   width: 100px;
   height: 100px;
-  z-index: 2;
 }
 
 
 /* [ ACCOUTREMENT ] */
 .medic, .ammo {
-  z-index: 3;
   position: absolute;
   background-size: cover;
   width: 100px;
@@ -84,7 +80,6 @@ section {
   position: absolute;
 	width: 70px;
 	height: 35px;
-  z-index: 5;
 	transform: skew(-40deg);
 }
 
@@ -93,11 +88,23 @@ section {
 .bullet {
   width: 2px;
   height: 2px;
-  z-index: 1;
+  z-index: 0;
   position: absolute;
   background: red;
 }
 
+
+
+
+
+/* [ BLOCK ] */
+.block {
+  background: red;
+  width: 71px;
+  height: 20px;
+  position: absolute;
+  margin: 300px 0 0 200px;
+}
 
 
 
