@@ -7,24 +7,33 @@ let main = document.querySelector('main'),
     control = 0
 
   
+/* [ ПОЛУЧИТЬ КОНТРОЛЬ НАД ПЕРСОНАЖЕМ ] */
 document.oncontextmenu = (e) => {
 
-  if(e.target.className == 'user' || e.target.className == 'enemy' ||
-    (e.target.className == 'bottom' && e.target.style.background == 'rgba(255, 0, 0, 0)')||
-    (e.target.className == 'bottom' && e.target.style.background == 'rgba(0, 128, 0, 0)')){
+  let className = e.target.className,
+      background = e.target.style.background,
+      event = e.target
 
-    if(e.target.className == 'bottom'){
-      control = e.target.getAttribute('bottom')
-    } else {
-      control = e.target.getAttribute('index')
-    }
+  if(className == 'user' || className == 'enemy' ||
+    (className == 'bottom' && background == 'rgba(255, 0, 0, 0)')||
+    (className == 'bottom' && background == 'rgba(0, 128, 0, 0)')){
 
-  } return false
+    control = (className == 'bottom' ?
+    event.getAttribute('bottom') : 
+    event.getAttribute('index'))
+  } 
+
+  return false
 }
 
 /* [ Z-INDEX ] */
 function zIndex(x,y){
   return Math.floor(y/35)*(Math.floor(y/35)+Math.floor(x/71))
+}
+
+/* [ RANDOM ] */
+function random(min,max){
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 /* [ MARKER ] */
@@ -38,6 +47,29 @@ function marker(x,y,z){
   a.style.zIndex = 1559
   section.append(a)
 } 
+
+/* [ НАРИСОВАТЬ СЕТКУ ] */
+function setka(){
+  for(let i=0; i<700; i+=35){
+    for(let j=0; j<1420; j+=71){
+      let a = document.createElement('div');
+      a.style.margin = `${i}px 0 0 ${j}px`;
+      a.style.width = '2px';
+      a.style.height = '2px';
+      a.style.background = 'red';
+      a.style.position = 'absolute';
+      a.style.zIndex = 1000;
+      a.innerHTML = zIndex(j,i)
+      section.append(a);
+    }
+  }
+} // setka()
+
+
+
+
+
+
 
 
 
@@ -85,12 +117,76 @@ let gamer = {
       bottom.setAttribute('bottom', i)
       bottom.style.background = (gamer['who'][i] == 'enemy' ? 'rgba(255, 0, 0, 0)' : 'rgba(0, 128, 0, 0)')
       bottom.style.margin = `${gamer['y'][i]+65}px 0 0 ${gamer['x'][i]+15}px`
-      bottom.style.zIndex = 1560
+      bottom.style.zIndex = zIndex(main.offsetWidth, main.scrollHeight)
       section.append(bottom)
     }
   }
 
 }; gamer.add()
+
+
+
+
+
+/* [ ADD WALLS ] */
+let walls = [
+  336,70, 568,70, 639,70, 
+  710,70, 852,70, 156,350, 
+  376,350, 548,350, 1261,350
+]
+
+for(let i=0; i<walls.length-1; i++){
+  let j = i; j++
+  
+  let wall = document.createElement('div')
+  wall.setAttribute('class', 'wall')
+  wall.style.margin = `${walls[j]}px 0 0 ${walls[i]}px`
+  wall.style.zIndex = zIndex(walls[i],walls[j])
+
+  /* [ ВЫВЕСТИ ИНДЕКС ] */
+  // wall.innerHTML = zIndex(walls[i],walls[j])
+  // wall.style.textAlign = 'center'
+  // wall.style.color = 'blue'
+  section.append(wall)
+
+  let bottom = document.createElement('div')
+  bottom.setAttribute('class', 'bottom')
+  bottom.style.background = 'rgba(0, 0, 0, 0)'
+  bottom.style.margin = `${walls[j]+65}px 0 0 ${walls[i]+15}px`  
+  bottom.style.zIndex = zIndex(main.offsetWidth, main.scrollHeight)
+  section.append(bottom)
+
+  /* [ ТОЧКА КООРДИНАТ ] */
+  // marker(walls[i], walls[j], 'green')
+  i++
+}
+
+//** [ ОБЪЕДИНИТЬ ] */
+
+/* [ ACCOUTREMENT ] */
+let ammo = 0, medic = 0
+function addObject(z,x,y){ 
+
+  let obj = document.createElement('div')
+  obj.style.background = `url(img/${z}.png)`
+  obj.style.margin = `${y}px 0 0 ${x}px`
+  obj.style.zIndex = zIndex(x,y)
+  obj.style.display = 'block'
+  obj.setAttribute('class', z)
+  section.append(obj)
+
+  let bottom = document.createElement('div')
+  bottom.setAttribute('class', 'bottom')
+  bottom.setAttribute('index', (z == 'medic' ? (medic, medic++) : (ammo, ammo++)))
+  bottom.style.background = (z == 'medic' ? 'rgba(255, 255, 0, 0)' : 'rgba(0, 0, 255, 0)')
+  bottom.style.margin = `${y+65}px 0 0 ${x+15}px`
+  bottom.style.zIndex = zIndex(main.offsetWidth, main.scrollHeight)
+  section.append(bottom)
+} 
+addObject('ammo',  576, 396)
+addObject('medic', 792, 397)
+
+
 
 
 
@@ -212,108 +308,6 @@ function shot(index, shotX, shotY){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-/* [ НАРИСОВАТЬ СЕТКУ ] */
-function setka(){
-  for(let i=0; i<700; i+=35){
-    for(let j=0; j<1420; j+=71){
-      let a = document.createElement('div');
-      a.style.margin = `${i}px 0 0 ${j}px`;
-      a.style.width = '2px';
-      a.style.height = '2px';
-      a.style.background = 'red';
-      a.style.position = 'absolute';
-      a.style.zIndex = 1000;
-      a.innerHTML = zIndex(j,i)
-      section.append(a);
-    }
-  }
-
-} // setka()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* [ ADD WALLS ] */
-let walls = [
-  336,70, 568,70, 639,70, 
-  710,70, 852,70, 156,350, 
-  376,350, 548,350, 1261,350
-]
-
-for(let i=0; i<walls.length-1; i++){
-  let j = i; j++
-  
-  let wall = document.createElement('div')
-  wall.setAttribute('class', 'wall')
-  wall.style.margin = `${walls[j]}px 0 0 ${walls[i]}px`
-  wall.style.zIndex = zIndex(walls[i],walls[j])
-
-  /* [ ВЫВЕСТИ ИНДЕКС ] */
-  // wall.innerHTML = zIndex(walls[i],walls[j])
-  // wall.style.textAlign = 'center'
-  // wall.style.color = 'blue'
-  section.append(wall)
-
-  let bottom = document.createElement('div')
-  bottom.setAttribute('class', 'bottom')
-  bottom.style.background = 'rgba(0, 0, 0, 0)'
-  bottom.style.margin = `${walls[j]+65}px 0 0 ${walls[i]+15}px`  
-  bottom.style.zIndex = 1560
-  section.append(bottom)
-
-  /* [ ТОЧКА КООРДИНАТ ] */
-  // marker(walls[i], walls[j], 'green')
-  i++
-}
-
-//** [ ОБЪЕДИНИТЬ ] */
-
-/* [ ACCOUTREMENT ] */
-let ammo = 0, medic = 0
-function addObject(z,x,y){ 
-
-  let obj = document.createElement('div')
-  obj.style.background = `url(img/${z}.png)`
-  obj.style.margin = `${y}px 0 0 ${x}px`
-  obj.style.zIndex = zIndex(x,y)
-  obj.style.display = 'block'
-  obj.setAttribute('class', z)
-  section.append(obj)
-
-  let bottom = document.createElement('div')
-  bottom.setAttribute('class', 'bottom')
-  bottom.setAttribute('index', (z == 'medic' ? (medic, medic++) : (ammo, ammo++)))
-  bottom.style.background = (z == 'medic' ? 'rgba(255, 255, 0, 0)' : 'rgba(0, 0, 255, 0)')
-  bottom.style.margin = `${y+65}px 0 0 ${x+15}px`
-  bottom.style.zIndex = 1560
-  section.append(bottom)
-} 
-addObject('ammo',  576, 396)
-addObject('medic', 792, 397)
 
 
 
@@ -454,25 +448,15 @@ function touch(index){
 
   /* [ ДВИЖЕНИЕ ЭКРАНА ЗА ПОЛЬЗОВАТЕЛЕМ ] */
   if(index == control) document.querySelector('main').scrollTo(scrollX, scrollY);
-
-  /* [ ... ] */
   shooter.style.margin = `${gamer['y'][index]}px 0 0 ${gamer['x'][index]}px`
   shooter.style.zIndex = zIndex(gamer['x'][index], gamer['y'][index]+step)
-
-  /* [ ... ] */
   bottom.style.margin = `${gamer['y'][index]+65}px 0 0 ${gamer['x'][index]+15}px`
-  bottom.style.zIndex = 1560 
-  // console.log('Максимальный z-index: '+zIndex(1600, 1050))
 
   /* [ Z-INDEX ] */
   // section.getElementsByClassName('scale')[0].innerHTML = zIndex(gamer['x'][index], gamer['y'][index])
   // section.getElementsByClassName('scale')[0].style.color = 'blue'
-
+  
 }
-
-
-
-
 
 
 

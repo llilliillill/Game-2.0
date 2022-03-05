@@ -46,9 +46,6 @@ section {
   transform: rotate(-20deg);
   width: 100px;
   height: 10px;
-
-  /* [ ... ] */
-  /* display: block; */
 }
 
 .scale {
