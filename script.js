@@ -14,14 +14,7 @@ document.oncontextmenu = () => {
 
 /* [ Z-INDEX ] */
 function zIndex(x,y){
-  // return Math.floor((y+65)/35)+Math.floor((x+30)/71)
-  // return Math.floor(y/35)*(Math.floor((y+65)/35)+Math.floor((x+30)/71))
-
-  let step = (Math.floor(y/35)*30)*-1
-  return Math.floor(y/35)*(Math.floor((y+65)/35)+Math.floor(((step+x)+30)/71))
-
-  // let step = (Math.floor(y/35)*30)*-1
-  // return Math.floor(y/35)*(Math.floor(y/35)+Math.floor((step+x)/71))
+  return Math.floor(y/35)*(Math.floor(y/35)+Math.floor(x/71))
 }
 
 /* [ MARKER ] */
@@ -47,24 +40,24 @@ function marker(x,y,z){
 /* [ ADD GAMERS ] */
 let gamer = {
 
-  'who': [
-    'user','enemy','enemy','enemy',
-    'enemy','enemy','enemy'
-  ],
-
-  'position': [
-    200,200, 300,200, 460,200, 730,200, 
-    800,200, 900,200, 1000,200, 400,360
-  ],
-
-
   // 'who': [
-  //   'user'
+  //   'user','enemy','enemy','enemy',
+  //   'enemy','enemy','enemy'
   // ],
 
   // 'position': [
-  //   200,200
+  //   200,200, 300,200, 460,200, 730,200, 
+  //   800,200, 900,200, 1000,200, 400,360
   // ],
+
+
+  'who': [
+    'user'
+  ],
+
+  'position': [
+    200,200
+  ],
 
   /* [ ПРЕДЛОЖЕНИЕ: РАЗБИТЬ МАССИВ ЧТОБЫ 
     ИЗБАВИТСЯ ОТ ВЫЧИСЛЕНИЯ КООРДИНАТ ] */
@@ -254,13 +247,10 @@ function shot(index, shotX, shotY){
 
 
 function good(){
-  let step = 0
   for(let i=0; i<700; i+=35){
-    step -= 30 
-
     for(let j=0; j<1420; j+=71){
       let a = document.createElement('div');
-      a.style.margin = `${i+65}px 0 0 ${(step + j)+30}px`;
+      a.style.margin = `${i}px 0 0 ${j}px`;
       a.style.width = '2px';
       a.style.height = '2px';
       a.style.background = 'red';
@@ -289,16 +279,12 @@ function good(){
 
 
 
-
-
-
-
 /* [ ADD WALLS ] */
 let walls = [
 
-  355,70, 568,70, 639,70, 710,70, 852,70, 
+  336,70, 568,70, 639,70, 710,70, 852,70, 
 
-  238,350, 
+  156,350,  376,350, 
   
   548,350, 1261,350
 ]
@@ -323,11 +309,10 @@ for(let i=0; i<walls.length-1; i++){
   bottom.style.background = 'rgba(0, 0, 0, 0)'
   // bottom.style.background = 'gray'
   bottom.style.margin = `${walls[j]+65}px 0 0 ${walls[i]+15}px`  
-  // bottom.style.zIndex = zIndex(walls[i],walls[j])+2
   bottom.style.zIndex = 1000
   section.append(bottom)
 
-  marker(walls[i]+30, walls[j]+65, 'green')
+  //marker(walls[i], walls[j], 'green')
 
   i++
 }
@@ -410,20 +395,23 @@ function changeHealthGamer(index, value){
 
 // section.getElementsByClassName('bottom')[0].style.background = 'red'
 // marker(gamer['position'][0]+29, gamer['position'][1],'red')  
-// marker(gamer['position'][0]+30, gamer['position'][1]+65,'orange')  
+// marker(gamer['position'][0]-2, gamer['position'][1]+100,'orange') // 7 
 
 
 // marker(gamer['position'][0]+98, gamer['position'][1]+62,'red')     // 2
 // marker(gamer['position'][0]+100,gamer['position'][1]+66,'red')     // 3
 // marker(gamer['position'][0]+72, gamer['position'][1]+100,'red')    // 4
 // marker(gamer['position'][0]+68, gamer['position'][1]+102,'red')    // 5
-// marker(gamer['position'][0],    gamer['position'][1]+102,'red')    // 6
+// marker(gamer['position'][0],    gamer['position'][1]+102,'green')    // 6
+// marker(gamer['position'][0]+100,    gamer['position'][1]-2,'blue')    // 10
 // marker(gamer['position'][0]-2,  gamer['position'][1]+100,'red')    // 7
 
 
 
 /* [ СЦЕНАРИЙ СОПРИКОСНОВЕНИЯ С ОБЬЕКТОМ ПРИ ДВИЖЕНИИ ] */
+
 function touch(index){
+  let step = 0
 
   let shooter = section.querySelector(`[index="${index}"]`), 
   bottom = section.querySelector(`[bottom="${index}"]`), 
@@ -438,6 +426,10 @@ function touch(index){
     document.elementFromPoint(shooter.getBoundingClientRect().x+68, shooter.getBoundingClientRect().y+102), // 5
     document.elementFromPoint(shooter.getBoundingClientRect().x,    shooter.getBoundingClientRect().y+102), // 6
     document.elementFromPoint(shooter.getBoundingClientRect().x-2,  shooter.getBoundingClientRect().y+100), // 7
+
+    document.elementFromPoint(shooter.getBoundingClientRect().x-2,  shooter.getBoundingClientRect().y+36),  // 8
+    //document.elementFromPoint(shooter.getBoundingClientRect().x+30, shooter.getBoundingClientRect().y-2),   // 9
+    document.elementFromPoint(shooter.getBoundingClientRect().x+100,shooter.getBoundingClientRect().y-2)    // 10
   ]
 
   /* [ ПОЗИЦИИ КООРДИНАТ В МАССИВЕ GAMER ] */
@@ -489,8 +481,15 @@ function touch(index){
       break
     }
 
+    /* [ ... ] */
+    if(elem[i].className == 'wall' || 
+      elem[i].className == 'enemy' ||
+      elem[i].className == 'bottom'){
+      if(i == 7 || i == 8 ) step = 35;
+      if(i == 3 || i == 10) step =  0;
+    }
 
-    /* [ ЕСЛИ СОПРЕКОСНУЛИСЬ С СТЕНОЙ ... ] */
+    /* [ ЕСЛИ СОПРЕКОСНУЛИСЬ СО СТЕНОЙ ... ] */
     if(elem[i].className == 'bottom'){
       if(i == 0 || i == 7){ gamer['position'][x]+=2; if(index == 0){ scrollX+=2 } }
       if(i == 3 || i == 4){ gamer['position'][x]-=2; if(index == 0){ scrollX-=2 } }
@@ -501,6 +500,7 @@ function touch(index){
 
   }
 
+
   /* [ ДВИЖЕНИЕ ЭКРАНА ЗА ПОЛЬЗОВАТЕЛЕМ ] */
   if(index == 0) document.querySelector('main').scrollTo(scrollX, scrollY);
 
@@ -510,16 +510,17 @@ function touch(index){
 
   /* [ ... ] */
   shooter.style.margin = `${gamer['position'][y]}px 0 0 ${gamer['position'][x]}px`
-  shooter.style.zIndex = zIndex(gamer['position'][x],gamer['position'][y])
+  shooter.style.zIndex = zIndex(gamer['position'][x],gamer['position'][y]+step)
 
   /* [ ... ] */
   bottom.style.margin = `${gamer['position'][y]+65}px 0 0 ${gamer['position'][x]+15}px`
-  bottom.style.zIndex = 1000
+  bottom.style.zIndex = 1000 // Максимальный z-index
 
   /* [ ... ] */
-  // console.log(' user-z: '+zIndex)
   section.getElementsByClassName('scale')[0].innerHTML = zIndex(gamer['position'][x],gamer['position'][y])
   section.getElementsByClassName('scale')[0].style.color = 'blue'
+
+  //console.log(step)
 }
 
 

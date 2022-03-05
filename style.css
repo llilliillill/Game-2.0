@@ -48,7 +48,7 @@ section {
   height: 10px;
 
   /* [ ... ] */
-  /* display: block; */
+  display: block;
 }
 
 .scale {
