@@ -5,7 +5,6 @@ let main = document.querySelector('main'),
     user = document.getElementsByClassName('user'),
     enemy = document.getElementsByClassName('enemy'),
     scrollX = 0, scrollY = 0
-    // above = true, under = true 
 
   
 document.oncontextmenu = () => {
@@ -13,13 +12,17 @@ document.oncontextmenu = () => {
   return false
 }
 
+/* [ Z-INDEX ] */
+function zIndex(x,y){
+  // return Math.floor((y+65)/35)+Math.floor((x+30)/71)
+  // return Math.floor(y/35)*(Math.floor((y+65)/35)+Math.floor((x+30)/71))
 
-/* [ GAME FUNCTIONS ] */
-// function random(min,max){
-//   return Math.floor(Math.random() * (max - min + 1)) + min
-// }
+  let step = (Math.floor(y/35)*30)*-1
+  return Math.floor(y/35)*(Math.floor((y+65)/35)+Math.floor(((step+x)+30)/71))
 
-
+  // let step = (Math.floor(y/35)*30)*-1
+  // return Math.floor(y/35)*(Math.floor(y/35)+Math.floor((step+x)/71))
+}
 
 /* [ MARKER ] */
 function marker(x,y,z){
@@ -29,10 +32,9 @@ function marker(x,y,z){
   a.style.height = '2px';
   a.style.background = (z) ? z : 'red';
   a.style.position = 'absolute';
-  a.style.zIndex = 10;
+  a.style.zIndex = 1000;
   section.append(a);
 } 
-
 
 
 
@@ -50,23 +52,24 @@ let gamer = {
     'enemy','enemy','enemy'
   ],
 
+  'position': [
+    200,200, 300,200, 460,200, 730,200, 
+    800,200, 900,200, 1000,200, 400,360
+  ],
+
+
   // 'who': [
   //   'user'
   // ],
 
-  'position': [
-    200,200, 300,200, 460,200, 730,200, 
-    800,200, 900,200, 1000,200
-  ],
-
   // 'position': [
-  //   200,200, 
+  //   200,200
   // ],
 
   /* [ ПРЕДЛОЖЕНИЕ: РАЗБИТЬ МАССИВ ЧТОБЫ 
     ИЗБАВИТСЯ ОТ ВЫЧИСЛЕНИЯ КООРДИНАТ ] */
-  // 'x': [200,400,500,730,800,900,1000]
-  // 'y': [200,200,200,200,200,200, 200]
+  // 'x': [200,400,500,730,800,900,1000],
+  // 'y': [200,200,200,200,200,200, 200],
 
   'health': [
     100, 100, 100, 100, 100, 100, 100
@@ -80,12 +83,13 @@ let gamer = {
     let x = 0, y = 1 // deleted
     for(let i=0; i<gamer['who'].length; i++){
 
-      let zIndex = Math.floor((gamer['position'][y]+65)/35)+Math.floor((gamer['position'][x]+15)/71)
+      // let zIndex = Math.floor((gamer['position'][y]+65)/35)+Math.floor((gamer['position'][x]+15)/71)
+      // let zIndex = Math.floor((gamer['position'][y]+65)/35)+Math.floor((gamer['position'][x])+30/71)
 
       let div = document.createElement('div')
       div.style.margin = `${gamer['position'][y]}px 0 0 ${gamer['position'][x]}px`
       div.style.background = `url(img/${gamer['who'][i]}.png)`
-      div.style.zIndex = zIndex
+      div.style.zIndex = zIndex(gamer['position'][x],gamer['position'][y])
       div.setAttribute('class', gamer['who'][i])
       div.setAttribute('index', i)
       section.append(div)
@@ -102,20 +106,20 @@ let gamer = {
       bottom.setAttribute('class', 'bottom')
       bottom.setAttribute('bottom', i)
       bottom.style.background = (gamer['who'][i] == 'enemy' ? 'rgba(255, 0, 0, 0)' : 'rgba(0, 128, 0, 0)')
-      // bottom.style.background = 'gray'
+      // bottom.style.background = (gamer['who'][i] == 'enemy' ? 'rgba(255, 0, 0, 0)' : 'green')
       bottom.style.margin = `${gamer['position'][y]+65}px 0 0 ${gamer['position'][x]+15}px`
-      bottom.style.zIndex = zIndex+1
+      //bottom.style.zIndex = zIndex(gamer['position'][x],gamer['position'][y])+1
+      bottom.style.zIndex = 1000
       section.append(bottom)
 
       /* [ ... ] */
-      //console.log('user-y: '+gamer['position'][y]+' user-z: '+zIndex)
+      // console.log('user-y: '+gamer['position'][y]+' user-z: '+zIndex)
 
       x+=2, y+=2 // deleted
     }
   }
 
 }; gamer.add()
-
 
 
 
@@ -220,6 +224,8 @@ function shot(index, shotX, shotY){
       break
     }
 
+    //** [ ОБЪЕДИНИТЬ ] */
+
     /* [ ЕСЛИ ПУЛЯ ПОПАЛА В ПОЛЬЗОВАТЕЛЯ ] */
     if(shooter.className != 'user' && cockshot.className == 'user'){
       let index = cockshot.getAttribute('index')
@@ -244,47 +250,98 @@ function shot(index, shotX, shotY){
 
 
 
+
+
+
+function good(){
+  let step = 0
+  for(let i=0; i<700; i+=35){
+    step -= 30 
+
+    for(let j=0; j<1420; j+=71){
+      let a = document.createElement('div');
+      a.style.margin = `${i+65}px 0 0 ${(step + j)+30}px`;
+      a.style.width = '2px';
+      a.style.height = '2px';
+      a.style.background = 'red';
+      a.style.position = 'absolute';
+      a.style.zIndex = 1000;
+      a.innerHTML = zIndex(j,i)
+      section.append(a);
+    }
+  }
+
+} // good()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* [ ADD WALLS ] */
 let walls = [
-  60,2, 132,2, 30,38, 0,74,
-  460,72, 532,72, 604,72,
-  820,72, 892,72, 320,350,
-  604,350, 820,350, 892,350
+
+  355,70, 568,70, 639,70, 710,70, 852,70, 
+
+  238,350, 
+  
+  548,350, 1261,350
 ]
 
 for(let i=0; i<walls.length-1; i++){
   let j = i; j++
-
-  let zIndex = Math.floor((walls[j]+65)/35)+Math.floor((walls[i]+15)/71)
-
+  
   let wall = document.createElement('div')
   wall.setAttribute('class', 'wall')
   wall.style.margin = `${walls[j]}px 0 0 ${walls[i]}px`
-  wall.style.zIndex = zIndex
+  wall.style.zIndex = zIndex(walls[i],walls[j])
+
+  /* [ ... ] */
+  wall.innerHTML = zIndex(walls[i],walls[j])
+  wall.style.textAlign = 'center'
+  wall.style.color = 'blue'
+
   section.append(wall)
 
   let bottom = document.createElement('div')
   bottom.setAttribute('class', 'bottom')
   bottom.style.background = 'rgba(0, 0, 0, 0)'
-  bottom.style.margin = `${walls[j]+65}px 0 0 ${walls[i]+15}px`
-  bottom.style.zIndex = zIndex+2
+  // bottom.style.background = 'gray'
+  bottom.style.margin = `${walls[j]+65}px 0 0 ${walls[i]+15}px`  
+  // bottom.style.zIndex = zIndex(walls[i],walls[j])+2
+  bottom.style.zIndex = 1000
   section.append(bottom)
+
+  marker(walls[i]+30, walls[j]+65, 'green')
+
   i++
 }
 
-
-
-
+//** [ ОБЪЕДИНИТЬ ] */
 
 /* [ ACCOUTREMENT ] */
 let ammo = 0, medic = 0
 function addObject(z,x,y){ 
-  let zIndex = Math.floor((y+65)/35)+Math.floor((x+15)/71) 
 
   let obj = document.createElement('div')
   obj.style.background = `url(img/${z}.png)`
   obj.style.margin = `${y}px 0 0 ${x}px`
-  obj.style.zIndex = zIndex
+  obj.style.zIndex = zIndex(x,y)
   obj.style.display = 'block'
   obj.setAttribute('class', z)
   section.append(obj)
@@ -294,11 +351,11 @@ function addObject(z,x,y){
   bottom.setAttribute('index', (z == 'medic' ? (medic, medic++) : (ammo, ammo++)))
   bottom.style.background = (z == 'medic' ? 'rgba(255, 255, 0, 0)' : 'rgba(0, 0, 255, 0)')
   bottom.style.margin = `${y+65}px 0 0 ${x+15}px`
-  bottom.style.zIndex = zIndex+1
+  bottom.style.zIndex = zIndex(x,y)+1
   section.append(bottom)
 } 
-addObject('ammo',570,400)
-addObject('medic',780,400)
+// addObject('ammo',  576, 396)
+// addObject('medic', 792, 397)
 
 
 
@@ -338,7 +395,10 @@ function changeHealthGamer(index, value){
   scale.style.width = gamer['health'][index]+'px'
 
   if(gamer['health'][index] <= 0){
-    revival(index)
+    section.querySelector(`[index="${index}"]`)
+    .style.display = 'none'
+    section.getElementsByClassName('bottom')
+    [index].style.display = 'none'
   }
 
   setTimeout(() => {
@@ -346,17 +406,13 @@ function changeHealthGamer(index, value){
   }, 3000)
 }
 
-/* [ ВОЗРОЖДЕНИЕ ] */
-function revival(index){
-  section.querySelector(`[index="${index}"]`).style.display = 'none'
-  section.getElementsByClassName('bottom')[index].style.display = 'none'
-}
-
 
 
 // section.getElementsByClassName('bottom')[0].style.background = 'red'
-// marker(gamer['position'][0]+25, gamer['position'][1]+66,'yellow')  // 0
-// marker(gamer['position'][0]+31, gamer['position'][1]+62,'orange')  // 1
+// marker(gamer['position'][0]+29, gamer['position'][1],'red')  
+// marker(gamer['position'][0]+30, gamer['position'][1]+65,'orange')  
+
+
 // marker(gamer['position'][0]+98, gamer['position'][1]+62,'red')     // 2
 // marker(gamer['position'][0]+100,gamer['position'][1]+66,'red')     // 3
 // marker(gamer['position'][0]+72, gamer['position'][1]+100,'red')    // 4
@@ -382,9 +438,6 @@ function touch(index){
     document.elementFromPoint(shooter.getBoundingClientRect().x+68, shooter.getBoundingClientRect().y+102), // 5
     document.elementFromPoint(shooter.getBoundingClientRect().x,    shooter.getBoundingClientRect().y+102), // 6
     document.elementFromPoint(shooter.getBoundingClientRect().x-2,  shooter.getBoundingClientRect().y+100), // 7
-    document.elementFromPoint(shooter.getBoundingClientRect().x-2,  shooter.getBoundingClientRect().y+36),  // 8
-    document.elementFromPoint(shooter.getBoundingClientRect().x+30, shooter.getBoundingClientRect().y-2),   // 9
-    document.elementFromPoint(shooter.getBoundingClientRect().x+100,shooter.getBoundingClientRect().y-2)    // 10
   ]
 
   /* [ ПОЗИЦИИ КООРДИНАТ В МАССИВЕ GAMER ] */
@@ -417,6 +470,7 @@ function touch(index){
       break
     }
 
+    //** [ ОБЪЕДИНИТЬ ] */
 
     /* [ ЕСЛИ СОПРЕКОСНУЛИСЬ С АПТЕЧКОЙ ... ] */
     if(elem[i].style.background == 'rgba(255, 255, 0, 0)'){ 
@@ -448,21 +502,24 @@ function touch(index){
   }
 
   /* [ ДВИЖЕНИЕ ЭКРАНА ЗА ПОЛЬЗОВАТЕЛЕМ ] */
-  if(index == 0) document.querySelector('main').scrollTo(scrollX,scrollY);
+  if(index == 0) document.querySelector('main').scrollTo(scrollX, scrollY);
 
   /* [ Z-INDEX ] */
-  let zIndex = Math.floor((gamer['position'][y]+65)/35)+Math.floor((gamer['position'][x]+15)/71)
+  // let zIndex = Math.floor((gamer['position'][y]+65)/34)+Math.floor((gamer['position'][x]+15)/71)
+  // let zIndex = Math.floor((gamer['position'][y]+65)/35)+Math.floor((gamer['position'][x]+30)/71)
 
   /* [ ... ] */
   shooter.style.margin = `${gamer['position'][y]}px 0 0 ${gamer['position'][x]}px`
-  shooter.style.zIndex = zIndex
+  shooter.style.zIndex = zIndex(gamer['position'][x],gamer['position'][y])
 
   /* [ ... ] */
   bottom.style.margin = `${gamer['position'][y]+65}px 0 0 ${gamer['position'][x]+15}px`
-  bottom.style.zIndex = zIndex+1
+  bottom.style.zIndex = 1000
 
   /* [ ... ] */
-  // console.log('user-x: '+gamer['position'][x]+' user-z: '+zIndex)
+  // console.log(' user-z: '+zIndex)
+  section.getElementsByClassName('scale')[0].innerHTML = zIndex(gamer['position'][x],gamer['position'][y])
+  section.getElementsByClassName('scale')[0].style.color = 'blue'
 }
 
 

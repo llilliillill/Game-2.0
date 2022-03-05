@@ -33,7 +33,6 @@ section {
   background-size: cover;
   margin: 150px 0 0 200px;
   position: absolute;
-  display: block;
   width: 100px;
   height: 100px;
 }
@@ -47,6 +46,9 @@ section {
   transform: rotate(-20deg);
   width: 100px;
   height: 10px;
+
+  /* [ ... ] */
+  /* display: block; */
 }
 
 .scale {
@@ -94,17 +96,6 @@ section {
 }
 
 
-
-
-
-/* [ BLOCK ] */
-.block {
-  background: red;
-  width: 71px;
-  height: 20px;
-  position: absolute;
-  margin: 300px 0 0 200px;
-}
 
 
 
