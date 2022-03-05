@@ -1,15 +1,25 @@
 /* [ GAME SATTINGS ] */
-
 let main = document.querySelector('main'),
     section = document.querySelector('section'),
     user = document.getElementsByClassName('user'),
     enemy = document.getElementsByClassName('enemy'),
-    scrollX = 0, scrollY = 0
+    scrollX = 0, scrollY = 0, intervalX = 0, intervalY = 0,
+    control = 0
 
   
-document.oncontextmenu = () => {
-  document.location = 'index.html' 
-  return false
+document.oncontextmenu = (e) => {
+
+  if(e.target.className == 'user' || e.target.className == 'enemy' ||
+    (e.target.className == 'bottom' && e.target.style.background == 'rgba(255, 0, 0, 0)')||
+    (e.target.className == 'bottom' && e.target.style.background == 'rgba(0, 128, 0, 0)')){
+
+    if(e.target.className == 'bottom'){
+      control = e.target.getAttribute('bottom')
+    } else {
+      control = e.target.getAttribute('index')
+    }
+
+  } return false
 }
 
 /* [ Z-INDEX ] */
@@ -20,13 +30,13 @@ function zIndex(x,y){
 /* [ MARKER ] */
 function marker(x,y,z){
   let a = document.createElement('div');
-  a.style.margin = y+'px 0 0 '+x+'px';
-  a.style.width = '2px';
-  a.style.height = '2px';
-  a.style.background = (z) ? z : 'red';
-  a.style.position = 'absolute';
-  a.style.zIndex = 1000;
-  section.append(a);
+  a.style.margin = `${y}px 0 0 ${x}px`
+  a.style.width = '2px'
+  a.style.height = '2px'
+  a.style.background = (z) ? z : 'red'
+  a.style.position = 'absolute'
+  a.style.zIndex = 1559
+  section.append(a)
 } 
 
 
@@ -75,7 +85,7 @@ let gamer = {
       bottom.setAttribute('bottom', i)
       bottom.style.background = (gamer['who'][i] == 'enemy' ? 'rgba(255, 0, 0, 0)' : 'rgba(0, 128, 0, 0)')
       bottom.style.margin = `${gamer['y'][i]+65}px 0 0 ${gamer['x'][i]+15}px`
-      bottom.style.zIndex = 1000
+      bottom.style.zIndex = 1560
       section.append(bottom)
     }
   }
@@ -101,7 +111,7 @@ let gamer = {
 
 
 /* [ ... ] */
-document.onclick = (e) => { shot(0, e.pageX, e.pageY) }
+document.onclick = (e) => { shot(control, e.pageX, e.pageY) }
 
 
 /* [ ОБСТРЕЛЯТЬ ПОЛЬЗОВАТЕЛЯ ] */
@@ -272,7 +282,7 @@ for(let i=0; i<walls.length-1; i++){
   bottom.setAttribute('class', 'bottom')
   bottom.style.background = 'rgba(0, 0, 0, 0)'
   bottom.style.margin = `${walls[j]+65}px 0 0 ${walls[i]+15}px`  
-  bottom.style.zIndex = 1000
+  bottom.style.zIndex = 1560
   section.append(bottom)
 
   /* [ ТОЧКА КООРДИНАТ ] */
@@ -299,7 +309,7 @@ function addObject(z,x,y){
   bottom.setAttribute('index', (z == 'medic' ? (medic, medic++) : (ammo, ammo++)))
   bottom.style.background = (z == 'medic' ? 'rgba(255, 255, 0, 0)' : 'rgba(0, 0, 255, 0)')
   bottom.style.margin = `${y+65}px 0 0 ${x+15}px`
-  bottom.style.zIndex = 1000
+  bottom.style.zIndex = 1560
   section.append(bottom)
 } 
 addObject('ammo',  576, 396)
@@ -376,9 +386,6 @@ function touch(index){
     document.elementFromPoint(shooter.getBoundingClientRect().x+100,shooter.getBoundingClientRect().y-2)    // 9
   ]
 
-  /* [ ПОЗИЦИИ КООРДИНАТ В МАССИВЕ GAMER ] */
-  //x+=index+index, y+=index+index // deleted
-
   /* [ ОПРЕДЕЛЯЕМ ГРАНИЦИ КАРТЫ ] */
   if(gamer['x'][index]<0){ gamer['x'][index]+=2 } 
   if(gamer['y'][index]<0){ gamer['y'][index]+=2 } 
@@ -435,10 +442,10 @@ function touch(index){
 
     /* [ ЕСЛИ СОПРЕКОСНУЛИСЬ СО СТЕНОЙ ... ] */
     if(elem[i].className == 'bottom'){
-      if(i == 0 || i == 7){ gamer['x'][index]+=2; if(index == 0){ scrollX+=2 } }
-      if(i == 3 || i == 4){ gamer['x'][index]-=2; if(index == 0){ scrollX-=2 } }
-      if(i == 1 || i == 2){ gamer['y'][index]+=2; if(index == 0){ scrollY+=2 } }
-      if(i == 6 || i == 5){ gamer['y'][index]-=2; if(index == 0){ scrollY-=2 } }
+      if(i == 0 || i == 7){ gamer['x'][index]+=2; if(index == control){ scrollX+=2 } }
+      if(i == 3 || i == 4){ gamer['x'][index]-=2; if(index == control){ scrollX-=2 } }
+      if(i == 1 || i == 2){ gamer['y'][index]+=2; if(index == control){ scrollY+=2 } }
+      if(i == 6 || i == 5){ gamer['y'][index]-=2; if(index == control){ scrollY-=2 } }
       break
     }
 
@@ -446,7 +453,7 @@ function touch(index){
 
 
   /* [ ДВИЖЕНИЕ ЭКРАНА ЗА ПОЛЬЗОВАТЕЛЕМ ] */
-  if(index == 0) document.querySelector('main').scrollTo(scrollX, scrollY);
+  if(index == control) document.querySelector('main').scrollTo(scrollX, scrollY);
 
   /* [ ... ] */
   shooter.style.margin = `${gamer['y'][index]}px 0 0 ${gamer['x'][index]}px`
@@ -454,7 +461,8 @@ function touch(index){
 
   /* [ ... ] */
   bottom.style.margin = `${gamer['y'][index]+65}px 0 0 ${gamer['x'][index]+15}px`
-  bottom.style.zIndex = 1000 // Максимальный z-index
+  bottom.style.zIndex = 1560 
+  // console.log('Максимальный z-index: '+zIndex(1600, 1050))
 
   /* [ Z-INDEX ] */
   // section.getElementsByClassName('scale')[0].innerHTML = zIndex(gamer['x'][index], gamer['y'][index])
@@ -468,26 +476,29 @@ function touch(index){
 
 
 
+
 /* [ ПЕРЕМЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ ] */
-let intervalX = 0, intervalY = 0
+document.onkeydown = (e) => { run(e, control, true) }
+document.onkeyup = (e) => { run(e, control) }
 
-document.onkeydown = (e) => {
-  switch(e.code){
-    case 'KeyW': if(!intervalY) intervalY = setInterval(() => { touch(0), gamer['y'][0]-=2, scrollY-=2; }, 10); break
-    case 'KeyS': if(!intervalY) intervalY = setInterval(() => { touch(0), gamer['y'][0]+=2, scrollY+=2; }, 10); break
-    case 'KeyA': if(!intervalX) intervalX = setInterval(() => { touch(0), gamer['x'][0]-=2, scrollX-=2; }, 10); break
-    case 'KeyD': if(!intervalX) intervalX = setInterval(() => { touch(0), gamer['x'][0]+=2, scrollX+=2; }, 10); break
+function run(e, index, action){
+  if(action){
+    switch(e.code){
+      case 'KeyW': if(!intervalY) intervalY = setInterval(() => { touch(index), gamer['y'][index]-=2, scrollY-=2; }, 10); break
+      case 'KeyS': if(!intervalY) intervalY = setInterval(() => { touch(index), gamer['y'][index]+=2, scrollY+=2; }, 10); break
+      case 'KeyA': if(!intervalX) intervalX = setInterval(() => { touch(index), gamer['x'][index]-=2, scrollX-=2; }, 10); break
+      case 'KeyD': if(!intervalX) intervalX = setInterval(() => { touch(index), gamer['x'][index]+=2, scrollX+=2; }, 10); break
+    }
+  } else {
+    switch(e.code){
+      case 'KeyW': clearInterval(intervalY), intervalY = 0; break
+      case 'KeyS': clearInterval(intervalY), intervalY = 0; break
+      case 'KeyA': clearInterval(intervalX), intervalX = 0; break
+      case 'KeyD': clearInterval(intervalX), intervalX = 0; break
+    }
   }
 }
 
-document.onkeyup = (e) => {
-  switch(e.code){
-    case 'KeyW': clearInterval(intervalY), intervalY = 0; break
-    case 'KeyS': clearInterval(intervalY), intervalY = 0; break
-    case 'KeyA': clearInterval(intervalX), intervalX = 0; break
-    case 'KeyD': clearInterval(intervalX), intervalX = 0; break
-  }
-}
 
 
 
