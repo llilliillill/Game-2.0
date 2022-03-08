@@ -177,56 +177,14 @@ addObject('medic', 792, 397)
 
 
 
-let gun = {
-
-  /* [ ПИСТОЛЕТЫ ] */
-  'TT' : {
-    'type' : 'pistol', // Тип оружия
-    'speed' : 300, // Скорость
-    'damage' : -5, // Урон
-    'distance' : 30 // Дальность
-  },
-
-  /* [ ДРОБОВИКИ ] */
-  'MP-135' : {
-    'type' : 'shotgun',
-    'speed' : 500,
-    'damage' : -15,
-    'distance' : 40
-  },
-
-  /* [ АВТОМАТЫ ] */
-  'АК-103' : {
-    'type' : 'automate',
-    'speed' : 100,
-    'damage' : -5,
-    'distance' : 60
-  },
-
-  /* [ ВИНТОВКИ ] */
-  'СВД' : {
-    'type' : 'rifle',
-    'speed' : 500,
-    'damage' : -25,
-    'distance' : 100
-  }
-}
-
-
-
-
-
-
-
-
 
 
 
 
 /* [ КАК ВЕСТИ ОГОНЬ ] */
 document.onmousedown = () => { 
-  let index = gamer['used'][control],
-      used = gamer['gun'][control][index]
+  let used = gamer['gun'][control]
+          [gamer['used'][control]]
 
   switch(gun[used]['type']){
 
@@ -253,14 +211,13 @@ document.onmousedown = () => {
 
 document.onmouseup = () => { 
   clearInterval(intervalShot) 
-  // let index = gamer['used'][control]
-  // console.log('ammo: '+gamer['ammo'][control][index])
 }
 
 document.onmousemove = (e) => {
   shotX = e.pageX; shotY = e.pageY
-  //console.log('x: '+e.pageX+' y: '+e.pageY)
 }
+
+
 
 /* [ ВЫБРАТЬ ОРУЖИЕ ] */
 document.onmousewheel = (e) => {
@@ -303,8 +260,6 @@ function shot(index, used, shotX, shotY){
   /* [ ВЫСТРЕЛИТЬ ЕСЛИ ЕСТЬ ПАТРОНЫ ] */
   if(gamer['ammo'][index][fire] > 0){
 
-    // console.log(gun[used]['speed'])
-
     // marker(e.pageX-main.getBoundingClientRect().x+main.scrollLeft,
     // e.pageY-main.getBoundingClientRect().y+main.scrollTop,'green')
 
@@ -340,10 +295,10 @@ function shot(index, used, shotX, shotY){
 
       // bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
 
-      // if(i == 40){
+      // if(i == gun[used]['distance']){
       //   setTimeout(() => {
       //     bullet.remove()
-      //   }, 1000)
+      //   }, 500)
       // }
 
       /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ НА КРАЙ КАРТЫ УДАЛЯЕМ ЕЕ ] */
