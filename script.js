@@ -4,7 +4,7 @@ let main = document.querySelector('main'),
     user = document.getElementsByClassName('user'),
     enemy = document.getElementsByClassName('enemy'),
     scrollX = 0, scrollY = 0, intervalX = 0, intervalY = 0,
-    control = 0
+    control = 0, intervalShot, shotX = 0, shotY = 0
 
   
 /* [ ПОЛУЧИТЬ КОНТРОЛЬ НАД ПЕРСОНАЖЕМ ] */
@@ -15,8 +15,8 @@ document.oncontextmenu = (e) => {
       event = e.target
 
   if(className == 'user' || className == 'enemy' ||
-    (className == 'bottom' && background == 'rgba(255, 0, 0, 0)')||
-    (className == 'bottom' && background == 'rgba(0, 128, 0, 0)')){
+    (className == 'bottom' && background == 'rgba(255, 0, 0, 0)') ||
+    (className == 'bottom' && background == 'rgba(0, 128, 0, 0)') ){
 
     control = (className == 'bottom' ?
     event.getAttribute('bottom') : 
@@ -36,44 +36,6 @@ function random(min,max){
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-/* [ MARKER ] */
-function marker(x,y,z){
-  let a = document.createElement('div');
-  a.style.margin = `${y}px 0 0 ${x}px`
-  a.style.width = '2px'
-  a.style.height = '2px'
-  a.style.background = (z) ? z : 'red'
-  a.style.position = 'absolute'
-  a.style.zIndex = 1559
-  section.append(a)
-} 
-
-/* [ НАРИСОВАТЬ СЕТКУ ] */
-function setka(){
-  for(let i=0; i<700; i+=35){
-    for(let j=0; j<1420; j+=71){
-      let a = document.createElement('div');
-      a.style.margin = `${i}px 0 0 ${j}px`;
-      a.style.width = '2px';
-      a.style.height = '2px';
-      a.style.background = 'red';
-      a.style.position = 'absolute';
-      a.style.zIndex = 1000;
-      a.innerHTML = zIndex(j,i)
-      section.append(a);
-    }
-  }
-} // setka()
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -86,12 +48,34 @@ let gamer = {
     'user','enemy','enemy','enemy',
     'enemy','enemy','enemy'
   ],
+  //** [ ОБЪЕДИНИТЬ ] */
+  'health': [100,100,100,100,100,100,100],
+
+  'ammo': [
+    [120,120,120,120],
+    [120,120,120,120],
+    [120,120,120,120],
+    [120,120,120,120],
+    [120,120,120,120],
+    [120,120,120,120],
+    [120,120,120,120]
+  ],
 
   'x': [200,400,500,730,800,900,1000],
   'y': [200,200,200,200,200,200, 200],
 
-  'health': [100,100,100,100,100,100,100],
-  'ammo':   [120,120,120,120,120,120,120],
+  'gun' : [
+    [ 'TT', 'MP-135', 'АК-103', 'СВД' ],
+    [ 'TT', 'MP-135', 'АК-103', 'СВД' ],
+    [ 'TT', 'MP-135', 'АК-103', 'СВД' ],
+    [ 'TT', 'MP-135', 'АК-103', 'СВД' ],
+    [ 'TT', 'MP-135', 'АК-103', 'СВД' ],
+    [ 'TT', 'MP-135', 'АК-103', 'СВД' ],
+    [ 'TT', 'MP-135', 'АК-103', 'СВД' ]
+  ],
+
+  /* [ ОРУЖИЕ КОТОРОЕ СЕЙЧАС В РУКАХ У ПОЛЬЗОВАТЕЛЯ ] */
+  'used': [0,0,0,0,0,0,0],
 
   'add': () => {
     for(let i=0; i<gamer['who'].length; i++){
@@ -193,6 +177,40 @@ addObject('medic', 792, 397)
 
 
 
+let gun = {
+
+  /* [ ПИСТОЛЕТЫ ] */
+  'TT' : {
+    'type' : 'pistol', // Тип оружия
+    'speed' : 300, // Скорость
+    'damage' : -5, // Урон
+    'distance' : 30 // Дальность
+  },
+
+  /* [ ДРОБОВИКИ ] */
+  'MP-135' : {
+    'type' : 'shotgun',
+    'speed' : 500,
+    'damage' : -15,
+    'distance' : 40
+  },
+
+  /* [ АВТОМАТЫ ] */
+  'АК-103' : {
+    'type' : 'automate',
+    'speed' : 100,
+    'damage' : -5,
+    'distance' : 60
+  },
+
+  /* [ ВИНТОВКИ ] */
+  'СВД' : {
+    'type' : 'rifle',
+    'speed' : 500,
+    'damage' : -25,
+    'distance' : 100
+  }
+}
 
 
 
@@ -205,11 +223,68 @@ addObject('medic', 792, 397)
 
 
 
+/* [ КАК ВЕСТИ ОГОНЬ ] */
+document.onmousedown = () => { 
+  let index = gamer['used'][control],
+      used = gamer['gun'][control][index]
 
-/* [ ... ] */
-document.onclick = (e) => { shot(control, e.pageX, e.pageY) }
+  switch(gun[used]['type']){
+
+    case 'pistol': 
+      shot(control, used, shotX, shotY) 
+    break;
+
+    case 'shotgun': 
+      shot(control, used, shotX, shotY) 
+    break;
+    
+    case 'automate':
+      intervalShot = setInterval(() => {
+        shot(control, used, shotX, shotY) 
+      }, gun[used]['speed'])
+    break;
+
+    case 'rifle': 
+      shot(control, used, shotX, shotY) 
+    break;
+  }
+    
+}
+
+document.onmouseup = () => { 
+  clearInterval(intervalShot) 
+  // let index = gamer['used'][control]
+  // console.log('ammo: '+gamer['ammo'][control][index])
+}
+
+document.onmousemove = (e) => {
+  shotX = e.pageX; shotY = e.pageY
+  //console.log('x: '+e.pageX+' y: '+e.pageY)
+}
+
+/* [ ВЫБРАТЬ ОРУЖИЕ ] */
+document.onmousewheel = (e) => {
+  if(e.wheelDelta > 0){
+    if(gamer['used'][control] < gamer['gun'][control].length-1){
+      gamer['used'][control]++
+    } else {
+      gamer['used'][control] = 0
+    }
+  } else {
+    if(gamer['used'][control] > 0){
+      gamer['used'][control]--
+    } else {
+      gamer['used'][control] = gamer['gun'][control].length-1
+    }
+  }
+
+  let index = gamer['used'][control]
+  console.log('wheel: '+gamer['gun'][control][index])
+}
 
 
+
+//document.onclick = (e) => { shot(control, e.pageX, e.pageY) }
 /* [ ОБСТРЕЛЯТЬ ПОЛЬЗОВАТЕЛЯ ] */
 // let deg = 220;
 // for(let i=1; i<=4; i++){
@@ -220,88 +295,94 @@ document.onclick = (e) => { shot(control, e.pageX, e.pageY) }
 // }
 
 
-function shot(index, shotX, shotY){
+function shot(index, used, shotX, shotY){
 
-  // marker(e.pageX-main.getBoundingClientRect().x+main.scrollLeft,
-  // e.pageY-main.getBoundingClientRect().y+main.scrollTop,'green')
+  /* [ ИНДЕКС ОРУЖИЯ КОТОРОЕ ИСПОЛЬЗУЕТ СТРЕЛОК ] */
+  let fire = gamer['used'][index]
 
-  let shooter = section.querySelector(`[index="${index}"]`),
+  /* [ ВЫСТРЕЛИТЬ ЕСЛИ ЕСТЬ ПАТРОНЫ ] */
+  if(gamer['ammo'][index][fire] > 0){
 
-  x = 0, y = 0, 
-  userX = shooter.offsetLeft+50, 
-  userY = shooter.offsetTop+50, 
+    // console.log(gun[used]['speed'])
 
-  pageX = shotX-main.getBoundingClientRect().x+main.scrollLeft, 
-  pageY = shotY-main.getBoundingClientRect().y+main.scrollTop, 
+    // marker(e.pageX-main.getBoundingClientRect().x+main.scrollLeft,
+    // e.pageY-main.getBoundingClientRect().y+main.scrollTop,'green')
 
-  a = pageX-userX, b = pageY-userY, k = b/a 
+    let shooter = section.querySelector(`[index="${index}"]`),
+
+    x = 0, y = 0, 
+    userX = shooter.offsetLeft+50, 
+    userY = shooter.offsetTop+50, 
+
+    pageX = shotX-main.getBoundingClientRect().x+main.scrollLeft, 
+    pageY = shotY-main.getBoundingClientRect().y+main.scrollTop, 
+
+    a = pageX-userX, b = pageY-userY, k = b/a 
+
+    /* [ СОЗДАТЬ ПУЛЮ ] */
+    // let bullet = document.createElement('div')
+    // bullet.setAttribute('class', 'bullet')
+    // section.append(bullet)
+
+    for(let i=0; i<=gun[used]['distance']; i++){
+
+      if(Math.abs(a) < Math.abs(b)){
+        (pageY>userY ? y+=10 : y-=10), x=y/k
+      } else {
+        (pageX>userX ? x+=10 : x-=10), y=k*x
+      }
+
+      let bullet = document.createElement('div')
+      bullet.setAttribute('class', 'bullet')
+      bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
+      if(i == gun[used]['distance']) bullet.style.background = 'blue';
+      section.append(bullet)
+
+      // bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
+
+      // if(i == 40){
+      //   setTimeout(() => {
+      //     bullet.remove()
+      //   }, 1000)
+      // }
+
+      /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ НА КРАЙ КАРТЫ УДАЛЯЕМ ЕЕ ] */
+      if(bullet.getBoundingClientRect().x < main.getBoundingClientRect().x){ bullet.remove(); break }
+      if(bullet.getBoundingClientRect().y < main.getBoundingClientRect().y){ bullet.remove(); break }
+      if(bullet.getBoundingClientRect().x > main.offsetWidth+main.getBoundingClientRect().x){ bullet.remove(); break }
+      if(bullet.getBoundingClientRect().y > main.clientHeight+main.getBoundingClientRect().y){ bullet.remove(); break }
 
 
-  /* [ СОЗДАТЬ ПУЛЮ ] */
-  // let bullet = document.createElement('div')
-  // bullet.setAttribute('class', 'bullet')
-  // section.append(bullet)
+      /* [ ПРОВЕРЯЕМ ВО ЧТО ПОПАЛА ПУЛЯ ] */
+      let cockshot = document.elementFromPoint(
+        bullet.getBoundingClientRect().x,
+        bullet.getBoundingClientRect().y
+      )
 
 
-  for(let i=0; i<=40; i++){
+      /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ В СТЕНУ ] */
+      if(cockshot.className == 'bottom' && cockshot.style.background == 'rgba(0, 0, 0, 0)'){ 
+        bullet.remove(); break 
+      }
+      
 
-    if(Math.abs(a) < Math.abs(b)){
-      (pageY>userY ? y+=10 : y-=10), x=y/k
-    } else {
-      (pageX>userX ? x+=10 : x-=10), y=k*x
-    }
+      /* [ ЕСЛИ ПУЛЯ ПОПАЛА В ИГРОКА ] */
+      if(shooter.className != 'user'  && cockshot.className == 'user' || 
+        shooter.className != 'enemy' && cockshot.className == 'enemy'){
+        let index = cockshot.getAttribute('index')
+        changeHealthGamer(index, gun[used]['damage'])
+        bullet.remove()
+        break
+      }
+      
+    } 
 
-    let bullet = document.createElement('div')
-    bullet.setAttribute('class', 'bullet')
-    bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
-    if(i == 40) bullet.style.background = 'blue';
-    section.append(bullet)
+    // Отнять один патрон
+    gamer['ammo'][index][fire]--
+  } // if
 
-    // bullet.style.margin = `${y+userY}px 0 0 ${x+userX}px`
+  // console.log('shot: '+used)
 
-    // if(i == 40){
-    //   setTimeout(() => {
-    //     bullet.remove()
-    //   }, 1000)
-    // }
-
-    /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ НА КРАЙ КАРТЫ УДАЛЯЕМ ЕЕ ] */
-    if(bullet.getBoundingClientRect().x < main.getBoundingClientRect().x){ bullet.remove(); break }
-    if(bullet.getBoundingClientRect().y < main.getBoundingClientRect().y){ bullet.remove(); break }
-    if(bullet.getBoundingClientRect().x > main.offsetWidth+main.getBoundingClientRect().x){ bullet.remove(); break }
-    if(bullet.getBoundingClientRect().y > main.clientHeight+main.getBoundingClientRect().y){ bullet.remove(); break }
-
-
-    /* [ ПРОВЕРЯЕМ ВО ЧТО ПОПАЛА ПУЛЯ ] */
-    let cockshot = document.elementFromPoint(
-      bullet.getBoundingClientRect().x,
-      bullet.getBoundingClientRect().y
-    )
-
-    /* [ ЕСЛИ ПУЛЯ ПОПАДАЕТ В СТЕНУ ] */
-    if(cockshot.className == 'bottom' && cockshot.style.background == 'rgba(0, 0, 0, 0)'){ 
-      bullet.remove(); break 
-    }
-
-    /* [ ЕСЛИ ПУЛЯ ПОПАЛА ВО ВРАГА ] */
-    if(shooter.className != 'enemy' && cockshot.className == 'enemy'){ 
-      let index = cockshot.getAttribute('index')
-      changeHealthGamer(index, -15)
-      bullet.remove()
-      break
-    }
-
-    //** [ ОБЪЕДИНИТЬ ] */
-
-    /* [ ЕСЛИ ПУЛЯ ПОПАЛА В ПОЛЬЗОВАТЕЛЯ ] */
-    if(shooter.className != 'user' && cockshot.className == 'user'){
-      let index = cockshot.getAttribute('index')
-      changeHealthGamer(index, -15)
-      bullet.remove()
-      break
-    }
-    
-  } 
 }
 
 
@@ -403,7 +484,11 @@ function touch(index){
         ammo.style.display = 'block'
       }, 3000)
 
-      if(gamer['ammo'][index] < 120) gamer['ammo'][index] += 10; 
+      /* [ ПОПОЛНИТЬ БОЕЗАПАС ] */
+      for(let j=0; j<gamer['gun'][index].length; j++){
+        gamer['ammo'][index][j] = 120
+      } 
+
       break
     }
 
@@ -426,7 +511,7 @@ function touch(index){
       break
     }
 
-    /* [ ... ] */
+    /* [ КТО СВЕРХУ ] */
     if(elem[i].className == 'wall' || 
       elem[i].className == 'enemy' ||
       elem[i].className == 'bottom'){
